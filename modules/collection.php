@@ -515,7 +515,7 @@ function fee(str) {
 		</div>
 		<div class="row">
 			<div class="col-xs-12" align="center">
-				<button class="btn btn-sm btn-primary" name = "collsub">Submit</button>
+				<button class="btn btn-sm btn-primary" name = "collsub" onclick = "return confirm('Are you sure?');">Submit</button>
 			</div>
 		</div>
 	</form>

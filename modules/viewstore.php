@@ -50,26 +50,11 @@
 								<div class = "col-xs-3">
 					<label>Multiply By: </label> 
 					<select class="form-control input-sm" id="multiply" name = "multiply">
-					<?php
-						$sel1 = "";
-						$sel2 = "";
-						$sel3 = "";
-						$sel4 = "";
-						if($data['multi'] == '4'){
-							$sel4 = "selected";
-						}elseif($data['multi'] == '3.75'){
-							$sel3 = "selected";
-						}elseif($data['multi'] == '3.5'){
-							$sel2 = "selected";
-						}elseif($data['munlti' == '3.25']){
-							$sel1 == "selected";
-						}
-					?>
 						<option value="">-------</option>
-						<option <?php echo $sel4; ?> value="4">4</option>
-						<option <?php echo $sel3; ?> value="3.75">3.75</option>
-						<option <?php echo $sel2; ?> value="3.5">3.5</option>
-						<option <?php echo $sel1; ?> value="3.25">3.25</option>
+						<option <?php if($data['multi'] == '4'){ echo ' selected ';} ?> value="4">4</option>
+						<option <?php if($data['multi'] == '3.75'){ echo ' selected ';} ?> value="3.75">3.75</option>
+						<option <?php if($data['multi'] == '3.5'){ echo ' selected ';} ?> value="3.5">3.5</option>
+						<option <?php if($data['multi'] == '3.25'){ echo ' selected ';} ?> value="3.25">3.25</option>
 					</select>
 				</div>
 				<?php if($data['periperals'] > 0){ $peri = 100; } else { $peri = 0; }  ?>
@@ -141,7 +126,7 @@
 		
 		<div class="row">
 			<div class="col-xs-12" align="center">
-				<button class="btn btn-primary btn-sm" type = "submit" name = "upsub"><span class = "icon-checkmark"></span> Update Record </button> <a href = "?module=storedel&x=<?php echo $data['store_id']; ?>" class="btn btn-danger btn-sm" onClick="return confirm('Confirm Action');" ><span class = " icon-del"></span> Close Store </a>&nbsp;<a href = "?module=storelist" class="btn btn-warning btn-sm"><span class = " icon-exit"></span> Back to List </a>
+				<?php if($data['status'] == '1') { ?><button class="btn btn-primary btn-sm" type = "submit" name = "upsub"><span class = "icon-checkmark"></span> Update Record </button> <a href = "?module=storedel&x=<?php echo $data['store_id']; ?>" class="btn btn-danger btn-sm" onClick="return confirm('Confirm Action');" ><span class="icon-cross"></span> Close Store </a> <?php } ?> &nbsp;<a href = "?module=storelist" class="btn btn-warning btn-sm"><span class = " icon-exit"></span> Back to List </a>
 			</div>
 		</div>
 	</form>
