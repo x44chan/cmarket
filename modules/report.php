@@ -5,13 +5,10 @@
 	#reports label, #reports label{
 		font-size: 13px;
 	}
-	<?php
-		if(isset($_GET['print'])){
-			echo 'body { visibility: hidden; }';
-		}
-	?>
+	th{
+		text-align: center;
+	}
 	@media print {
-
 		body * {
 	    	visibility: hidden;
 	    
