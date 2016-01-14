@@ -43,10 +43,21 @@
 						'. $row['level'] .'
 					</div>
 					<div class = "col-xs-2">
-					<a role = "button" href = "?module=editinfo&x='.$row['account_id'].'"> Edit</a></li>
+						<a class = "btn btn-warning btn-sm" href = "?module=editinfo&x='.$row['account_id'].'"><span class = "icon-quill"></span> Edit</a>
+						<a class = "btn btn-danger btn-sm" onclick = "return confirm(\'Are you sure?\');" href = "?module=userlist&del=' . $row['account_id'] . '"><span class = "icon-cross"></span> Delete </a>
 					</div>
 				</div>';
 				
 		}
 		
 	}
+	if(isset($_GET['del'])){
+		$stmt = $conn->prepare("DELETE FROM user where account_id = ?");
+		$stmt->bind_param("i", $_GET['del']);
+		if($stmt->execute()){
+			echo '<script type = "text/javascript"> alert("Account deleted"); window.location.href = "?module=userlist";</script>';
+		}
+	}
+
+
+
