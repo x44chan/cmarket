@@ -1050,9 +1050,13 @@
 			<br><p>Prepared by:</p>
 		</div>
 	</div>
+	<?php
+		$stmt = "SELECT * FROM `references`";
+		$data = $conn->query($stmt)->fetch_assoc();
+	?>
 	<div class="row">
 		<div class="col-xs-4 col-xs-offset-1" style="text-align: center;">
-			<p><b><?php echo strtoupper($_SESSION['name']);?></b></p>
+			<p><b><?php echo strtoupper($data['aaide']);?></b></p>
 			<p>Admin Aide IV</p>
 		</div>
 		<div class="col-xs-4 col-xs-offset-3">
@@ -1061,7 +1065,7 @@
 	</div>
 	<div class="row">
 		<div class="col-xs-4 col-xs-offset-7" style="text-align: center;">
-			<p><b>MARIA E. SISCAR</b></p>
+			<p><b><?php echo strtoupper($data['mvisor']);?></b></p>
 			<p>Market Supervisor</p>
 		</div>
 	</div>
