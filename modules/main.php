@@ -65,7 +65,7 @@
             text: 'Cash Collection Graph'
         },
         subtitle: {
-            text: 'Total Collection: ₱ <?php echo number_format($cttotal)?>'
+            text: 'Total Collection: ₱ <?php echo number_format($cttotal,2)?>'
         },
         xAxis: {
             categories: [
@@ -87,7 +87,7 @@
         yAxis: {
             min: 0,
             title: {
-                text: '₱'
+                text: '₱esos'
             }
         },
         tooltip: {
