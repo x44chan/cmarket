@@ -1,68 +1,126 @@
-<?php
-	$sql = "SELECT * FROM `store`,`owner` where store.owner_id = owner.owner_id";
-	$result = $conn->query($sql);		
-	if($result->num_rows > 0){
-?>
-<div class="container-fluid" id = "report" style="padding: 5px 10px; text-align: center;">
-	<div class = "row">
-		<div class = "col-xs-6" align = "left">
-			<u><i><h4>Collection of <?php echo date("F 01") . ' - ' . date('t, Y'); ?></h4></i></u>
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-xs-3">
-			<label> Store Owner </label>			
-		</div>		
-		<div class="col-xs-3">
-			<label> Store Name </label>			
-		</div>
-		<div class="col-xs-3">
-			<label> Monthly Fee </label>			
-		</div>
-		<div class="col-xs-3">
-			<label> Collection </label>			
-		</div>		
-	</div>
-	<div class = "row">
-		<div class = "col-xs-12">
-			<hr>
-		</div>
-	</div>	
-<?php 
-		$totalmfee = 0;
-		$totalamountpaid = 0;
-		$totalbalance = 0;
-		$month = date("m");
-		while ($row = $result->fetch_assoc()) {
-			$colid = $row['store_id'];
-			//$sql1 = "SELECT sum(amount) as totalamount FROM `collection`,`store` where store.store_id = '$colid' and collection.store_id = '$colid' and CURDATE() BETWEEN datefr and dateto";
-			$sql1 = "SELECT sum(amount) as totalamount FROM `collection`,`store` where store.store_id = '$colid' and collection.store_id = '$colid' and (month(datefr) = '$month' or month(dateto) = '$month')";
-			$result1 = $conn->query($sql1);
-			$data = $result1->fetch_assoc();
-			$totalamount = $data['totalamount'];
-			if($totalamount == ""){
-				$totalamount = 0;
-			}
-			$balance = ($row['area'] * 4 * 30) - $totalamount;
-			if($balance < 0){
-				$balance = 0;
-			}
-			if($row['multi'] == ""){
-				$row['multi'] = 4;
-			}
-			echo '<div class = "row">';
-			echo '<div class = "col-xs-3">' . $row['lname'] . ', ' . $row['fname'] . ' ' . $row['mname'] . '</div>';
-			echo '<div class = "col-xs-3">' . $row['sname']  . '</div>';
-			echo '<div class = "col-xs-3">₱ ' . number_format($row['area'] * $row['multi'] * 30, 2)  . '</div>';
-			echo '<div class = "col-xs-3">₱ ' . number_format($totalamount, 2) . '</div>';
-			//echo '<div class = "col-xs-2">₱ ' . number_format($balance) . '</div>';
-			echo '</div>';
-			$totalmfee +=  $row['area'] * $row['multi'] * 30;	
-			$totalamountpaid += $totalamount;
-			$totalbalance += ($row['area'] * $row['multi'] * 30) - $totalamount;
+
+<div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+	<?php
+		$jan = 0; $feb = 0; $mar = 0; $apr = 0; $may = 0; $jun = 0; $jul = 0; $aug = 0; $sep = 0; $oct = 0; $nov = 0; $dec = 0;
+		if(!isset($_GET['year'])){
+			$year = date("Y");	
+		}else{
+			$year = mysqli_real_escape_string($conn, $_GET['year']);
 		}
-	echo '<div class = "row"><div class = "col-xs-12"><hr></div></div>';
-	echo '<div class = "row"><div class = "col-xs-3 col-xs-offset-3"><b>Total Amount: </b></div><div class = "col-xs-3">₱ ' . number_format($totalmfee,2) . '</div><div class = "col-xs-3">₱ ' . number_format($totalamountpaid,2) . '</div></div>';
-	echo '</div>';
-	}
+		
+		$cticket = "SELECT * FROM `collection` where YEAR(paydate) = '$year'";
+		$ctres = $conn->query($cticket);
+		$ctjan = 0; $ctfeb = 0; $ctmar = 0; $ctapr = 0; $ctmay = 0; $ctjun = 0; $ctjul = 0; $ctaug = 0; $ctsep = 0; $ctoct = 0; $ctnov = 0; $ctdec = 0; $cttotal = 0;
+		if($ctres->num_rows > 0){
+			while($row = $ctres->fetch_assoc()){
+				if(date("m", strtotime($row['paydate'])) == '01'){
+					$ctjan += $row['amount'];
+				}
+				elseif(date("m", strtotime($row['paydate'])) == '02'){
+					$ctfeb += $row['amount'];
+				}
+				elseif(date("m", strtotime($row['paydate'])) == '03'){
+					$ctmar += $row['amount'];
+				}
+				elseif(date("m", strtotime($row['paydate'])) == '04'){
+					$ctapr += $row['amount'];
+				}
+				elseif(date("m", strtotime($row['paydate'])) == '05'){
+					$ctmay += $row['amount'];
+				}
+				elseif(date("m", strtotime($row['paydate'])) == '06'){
+					$ctjun += $row['amount'];
+				}
+				elseif(date("m", strtotime($row['paydate'])) == '07'){
+					$ctjul += $row['amount'];
+				}
+				elseif(date("m", strtotime($row['paydate'])) == '08'){
+					$ctaug += $row['amount'];
+				}
+				elseif(date("m", strtotime($row['paydate'])) == '09'){
+					$ctsep += $row['amount'];
+				}
+				elseif(date("m", strtotime($row['paydate'])) == '10'){
+					$ctoct += $row['amount'];
+				}
+				elseif(date("m", strtotime($row['paydate'])) == '11'){
+					$ctnov += $row['amount'];
+				}
+				elseif(date("m", strtotime($row['paydate'])) == '12'){
+					$ctdec += $row['amount'];
+				}
+			}
+			$cttotal = $ctjan + $ctfeb + $ctmar + $ctapr + $ctmay + $ctjun + $ctjul + $ctaug + $ctsep + $ctoct + $ctnov + $ctdec;
+			$jan += $ctjan; $feb += $ctfeb; $mar += $ctmar; $apr += $ctapr; $may += $ctmay; $jun += $ctjun;
+			$jul += $ctjul; $aug += $ctaug; $sep += $ctsep; $oct += $ctoct; $nov += $ctnov; $dec += $ctdec;
+				}
 ?>
+<script type="text/javascript">
+	$(function () {
+    $('#container').highcharts({
+        chart: {
+            type: 'column'
+        },
+        title: {
+            text: 'Cash Collection Graph'
+        },
+        subtitle: {
+            text: 'Total Collection: ₱ <?php echo number_format($cttotal)?>'
+        },
+        xAxis: {
+            categories: [
+                'Jan',
+                'Feb',
+                'Mar',
+                'Apr',
+                'May',
+                'Jun',
+                'Jul',
+                'Aug',
+                'Sep',
+                'Oct',
+                'Nov',
+                'Dec'
+            ],
+            crosshair: true
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                text: '₱'
+            }
+        },
+        tooltip: {
+            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+            pointFormat: '<tr><td style="color:{series.color};padding:0"> </td>' +
+                '<td style="padding:0"><b>₱ {point.y:,.2f}</b></td></tr>',
+            footerFormat: '</table>',
+            shared: true,
+            useHTML: true
+        },
+        plotOptions: {
+            column: {
+                pointPadding: 0.2,
+                borderWidth: 0
+            }
+        },
+        series: [{
+            name: 'Collection <?php echo date("Y");?>',
+            data: [ <?php echo $ctjan;?>,
+            		<?php echo $ctfeb;?>,
+            		<?php echo $ctmar;?>,
+            		<?php echo $ctapr;?>,
+            		<?php echo $ctmay;?>,
+            		<?php echo $ctjun;?>,
+            		<?php echo $ctjul;?>,
+            		<?php echo $ctaug;?>,
+            		<?php echo $ctsep;?>,
+            		<?php echo $ctoct;?>,
+            		<?php echo $ctnov;?>,
+            		<?php echo $ctdec;?>
+            	  ]
+
+        }]
+    });
+});
+</script>

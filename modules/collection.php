@@ -659,8 +659,8 @@ function fee(str) {
 			<div class="col-xs-2" style="margin-top: -10px;">
 				<label></label>
 				<div class="form-inline">
-					<button class="form-control btn btn-primary btn-sm"> Search </button>
-					<a href = "?module=collection&action=daily" class="form-control btn btn-danger btn-sm"> Clear </a>
+					<button class="form-control btn btn-primary btn-sm"><span class="icon-search"></span> Search </button>
+					<a href = "?module=collection&action=daily" class="form-control btn btn-danger btn-sm"><span class = "icon-spinner11" ></span> Clear </a>
 				</div>
 			</div>
 		</form>

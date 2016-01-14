@@ -18,5 +18,7 @@
 		
 		<link rel="stylesheet" type="text/css" href="css/datatables.min.css"/> 
 		<script type="text/javascript" src="js/datatables.min.js"></script>		
+		<script type="text/javascript" src="js/highcharts.js"></script>
+		<script type="text/javascript" src="js/exporting.js"></script>
 	</head>
 	<body>
