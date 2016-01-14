@@ -180,19 +180,19 @@
 			?>
 			<tr>
 				<td> Cash Ticket </td>
-				<td> <?php if($ctjan > 0){ echo number_format($ctjan); } else { echo ' - '; }?> </td>
-				<td> <?php if($ctfeb > 0){ echo number_format($ctfeb); } else { echo ' - '; }?> </td>
-				<td> <?php if($ctmar > 0){ echo number_format($ctmar); } else { echo ' - '; }?> </td>
-				<td> <?php if($ctapr > 0){ echo number_format($ctapr); } else { echo ' - '; }?> </td>
-				<td> <?php if($ctmay > 0){ echo number_format($ctmay); } else { echo ' - '; }?> </td>
-				<td> <?php if($ctjun > 0){ echo number_format($ctjun); } else { echo ' - '; }?> </td>
-				<td> <?php if($ctjul > 0){ echo number_format($ctjul); } else { echo ' - '; }?> </td>
-				<td> <?php if($ctaug > 0){ echo number_format($ctaug); } else { echo ' - '; }?> </td>
-				<td> <?php if($ctsep > 0){ echo number_format($ctsep); } else { echo ' - '; }?> </td>
-				<td> <?php if($ctoct > 0){ echo number_format($ctoct); } else { echo ' - '; }?> </td>
-				<td> <?php if($ctnov > 0){ echo number_format($ctnov); } else { echo ' - '; }?> </td>
-				<td> <?php if($ctdec > 0){ echo number_format($ctdec); } else { echo ' - '; }?> </td>
-				<td> <b><?php if($cttotal > 0){ echo number_format($cttotal); } else { echo ' - '; }?> </td>
+				<td> <?php if($ctjan > 0){ echo number_format($ctjan,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($ctfeb > 0){ echo number_format($ctfeb,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($ctmar > 0){ echo number_format($ctmar,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($ctapr > 0){ echo number_format($ctapr,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($ctmay > 0){ echo number_format($ctmay,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($ctjun > 0){ echo number_format($ctjun,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($ctjul > 0){ echo number_format($ctjul,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($ctaug > 0){ echo number_format($ctaug,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($ctsep > 0){ echo number_format($ctsep,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($ctoct > 0){ echo number_format($ctoct,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($ctnov > 0){ echo number_format($ctnov,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($ctdec > 0){ echo number_format($ctdec,2); } else { echo ' - '; }?> </td>
+				<td> <b><?php if($cttotal > 0){ echo number_format($cttotal,2); } else { echo ' - '; }?> </td>
 			</tr>
 			<?php
 				$btax = "SELECT * FROM `collection` where YEAR(paydate) = '$year' and type = 'Business Tax'";
@@ -244,19 +244,19 @@
 			?>
 			<tr>
 				<td> Business Tax </td>
-				<td> <?php if($btjan > 0){ echo number_format($btjan); } else { echo ' - '; }?> </td>
-				<td> <?php if($btfeb > 0){ echo number_format($btfeb); } else { echo ' - '; }?> </td>
-				<td> <?php if($btmar > 0){ echo number_format($btmar); } else { echo ' - '; }?> </td>
-				<td> <?php if($btapr > 0){ echo number_format($btapr); } else { echo ' - '; }?> </td>
-				<td> <?php if($btmay > 0){ echo number_format($btmay); } else { echo ' - '; }?> </td>
-				<td> <?php if($btjun > 0){ echo number_format($btjun); } else { echo ' - '; }?> </td>
-				<td> <?php if($btjul > 0){ echo number_format($btjul); } else { echo ' - '; }?> </td>
-				<td> <?php if($btaug > 0){ echo number_format($btaug); } else { echo ' - '; }?> </td>
-				<td> <?php if($btsep > 0){ echo number_format($btsep); } else { echo ' - '; }?> </td>
-				<td> <?php if($btoct > 0){ echo number_format($btoct); } else { echo ' - '; }?> </td>
-				<td> <?php if($btnov > 0){ echo number_format($btnov); } else { echo ' - '; }?> </td>
-				<td> <?php if($btdec > 0){ echo number_format($btdec); } else { echo ' - '; }?> </td>
-				<td> <b><?php if($bttotal > 0){ echo number_format($bttotal); } else { echo ' - '; }?> </td>
+				<td> <?php if($btjan > 0){ echo number_format($btjan,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($btfeb > 0){ echo number_format($btfeb,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($btmar > 0){ echo number_format($btmar,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($btapr > 0){ echo number_format($btapr,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($btmay > 0){ echo number_format($btmay,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($btjun > 0){ echo number_format($btjun,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($btjul > 0){ echo number_format($btjul,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($btaug > 0){ echo number_format($btaug,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($btsep > 0){ echo number_format($btsep,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($btoct > 0){ echo number_format($btoct,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($btnov > 0){ echo number_format($btnov,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($btdec > 0){ echo number_format($btdec,2); } else { echo ' - '; }?> </td>
+				<td> <b><?php if($bttotal > 0){ echo number_format($bttotal,2); } else { echo ' - '; }?> </td>
 			</tr>
 			<?php
 				$ebax = "SELECT * FROM `collection` where YEAR(paydate) = '$year' and type = 'Electric Bill'";
@@ -308,19 +308,19 @@
 			?>
 			<tr>
 				<td> Electric Bill </td>
-				<td> <?php if($ebjan > 0){ echo number_format($ebjan); } else { echo ' - '; }?> </td>
-				<td> <?php if($ebfeb > 0){ echo number_format($ebfeb); } else { echo ' - '; }?> </td>
-				<td> <?php if($ebmar > 0){ echo number_format($ebmar); } else { echo ' - '; }?> </td>
-				<td> <?php if($ebapr > 0){ echo number_format($ebapr); } else { echo ' - '; }?> </td>
-				<td> <?php if($ebmay > 0){ echo number_format($ebmay); } else { echo ' - '; }?> </td>
-				<td> <?php if($ebjun > 0){ echo number_format($ebjun); } else { echo ' - '; }?> </td>
-				<td> <?php if($ebjul > 0){ echo number_format($ebjul); } else { echo ' - '; }?> </td>
-				<td> <?php if($ebaug > 0){ echo number_format($ebaug); } else { echo ' - '; }?> </td>
-				<td> <?php if($ebsep > 0){ echo number_format($ebsep); } else { echo ' - '; }?> </td>
-				<td> <?php if($eboct > 0){ echo number_format($eboct); } else { echo ' - '; }?> </td>
-				<td> <?php if($ebnov > 0){ echo number_format($ebnov); } else { echo ' - '; }?> </td>
-				<td> <?php if($ebdec > 0){ echo number_format($ebdec); } else { echo ' - '; }?> </td>
-				<td> <b><?php if($ebtotal > 0){ echo number_format($ebtotal); } else { echo ' - '; }?> </td>
+				<td> <?php if($ebjan > 0){ echo number_format($ebjan,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($ebfeb > 0){ echo number_format($ebfeb,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($ebmar > 0){ echo number_format($ebmar,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($ebapr > 0){ echo number_format($ebapr,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($ebmay > 0){ echo number_format($ebmay,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($ebjun > 0){ echo number_format($ebjun,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($ebjul > 0){ echo number_format($ebjul,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($ebaug > 0){ echo number_format($ebaug,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($ebsep > 0){ echo number_format($ebsep,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($eboct > 0){ echo number_format($eboct,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($ebnov > 0){ echo number_format($ebnov,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($ebdec > 0){ echo number_format($ebdec,2); } else { echo ' - '; }?> </td>
+				<td> <b><?php if($ebtotal > 0){ echo number_format($ebtotal,2); } else { echo ' - '; }?> </td>
 			</tr>
 			<?php
 				$rfax = "SELECT * FROM `collection` where YEAR(paydate) = '$year' and type = 'Renewal Fee'";
@@ -372,19 +372,19 @@
 			?>
 			<tr>
 				<td> Renewal Fee </td>
-				<td> <?php if($rfjan > 0){ echo number_format($rfjan); } else { echo ' - '; }?> </td>
-				<td> <?php if($rffeb > 0){ echo number_format($rffeb); } else { echo ' - '; }?> </td>
-				<td> <?php if($rfmar > 0){ echo number_format($rfmar); } else { echo ' - '; }?> </td>
-				<td> <?php if($rfapr > 0){ echo number_format($rfapr); } else { echo ' - '; }?> </td>
-				<td> <?php if($rfmay > 0){ echo number_format($rfmay); } else { echo ' - '; }?> </td>
-				<td> <?php if($rfjun > 0){ echo number_format($rfjun); } else { echo ' - '; }?> </td>
-				<td> <?php if($rfjul > 0){ echo number_format($rfjul); } else { echo ' - '; }?> </td>
-				<td> <?php if($rfaug > 0){ echo number_format($rfaug); } else { echo ' - '; }?> </td>
-				<td> <?php if($rfsep > 0){ echo number_format($rfsep); } else { echo ' - '; }?> </td>
-				<td> <?php if($rfoct > 0){ echo number_format($rfoct); } else { echo ' - '; }?> </td>
-				<td> <?php if($rfnov > 0){ echo number_format($rfnov); } else { echo ' - '; }?> </td>
-				<td> <?php if($rfdec > 0){ echo number_format($rfdec); } else { echo ' - '; }?> </td>
-				<td> <b><?php if($rftotal > 0){ echo number_format($rftotal); } else { echo ' - '; }?> </td>
+				<td> <?php if($rfjan > 0){ echo number_format($rfjan,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($rffeb > 0){ echo number_format($rffeb,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($rfmar > 0){ echo number_format($rfmar,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($rfapr > 0){ echo number_format($rfapr,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($rfmay > 0){ echo number_format($rfmay,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($rfjun > 0){ echo number_format($rfjun,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($rfjul > 0){ echo number_format($rfjul,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($rfaug > 0){ echo number_format($rfaug,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($rfsep > 0){ echo number_format($rfsep,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($rfoct > 0){ echo number_format($rfoct,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($rfnov > 0){ echo number_format($rfnov,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($rfdec > 0){ echo number_format($rfdec,2); } else { echo ' - '; }?> </td>
+				<td> <b><?php if($rftotal > 0){ echo number_format($rftotal,2	); } else { echo ' - '; }?> </td>
 			</tr>
 			<?php
 				$mfax = "SELECT * FROM `collection` where YEAR(paydate) = '$year' and type = 'Market Fee'";
@@ -436,19 +436,19 @@
 			?>
 			<tr>
 				<td> Market Fee </td>
-				<td> <?php if($mfjan > 0){ echo number_format($mfjan); } else { echo ' - '; }?> </td>
-				<td> <?php if($mffeb > 0){ echo number_format($mffeb); } else { echo ' - '; }?> </td>
-				<td> <?php if($mfmar > 0){ echo number_format($mfmar); } else { echo ' - '; }?> </td>
-				<td> <?php if($mfapr > 0){ echo number_format($mfapr); } else { echo ' - '; }?> </td>
-				<td> <?php if($mfmay > 0){ echo number_format($mfmay); } else { echo ' - '; }?> </td>
-				<td> <?php if($mfjun > 0){ echo number_format($mfjun); } else { echo ' - '; }?> </td>
-				<td> <?php if($mfjul > 0){ echo number_format($mfjul); } else { echo ' - '; }?> </td>
-				<td> <?php if($mfaug > 0){ echo number_format($mfaug); } else { echo ' - '; }?> </td>
-				<td> <?php if($mfsep > 0){ echo number_format($mfsep); } else { echo ' - '; }?> </td>
-				<td> <?php if($mfoct > 0){ echo number_format($mfoct); } else { echo ' - '; }?> </td>
-				<td> <?php if($mfnov > 0){ echo number_format($mfnov); } else { echo ' - '; }?> </td>
-				<td> <?php if($mfdec > 0){ echo number_format($mfdec); } else { echo ' - '; }?> </td>
-				<td> <b><?php if($mftotal > 0){ echo number_format($mftotal); } else { echo ' - '; }?> </td>
+				<td> <?php if($mfjan > 0){ echo number_format($mfjan,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($mffeb > 0){ echo number_format($mffeb,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($mfmar > 0){ echo number_format($mfmar,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($mfapr > 0){ echo number_format($mfapr,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($mfmay > 0){ echo number_format($mfmay,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($mfjun > 0){ echo number_format($mfjun,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($mfjul > 0){ echo number_format($mfjul,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($mfaug > 0){ echo number_format($mfaug,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($mfsep > 0){ echo number_format($mfsep,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($mfoct > 0){ echo number_format($mfoct,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($mfnov > 0){ echo number_format($mfnov,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($mfdec > 0){ echo number_format($mfdec,2); } else { echo ' - '; }?> </td>
+				<td> <b><?php if($mftotal > 0){ echo number_format($mftotal,2); } else { echo ' - '; }?> </td>
 			</tr>
 			<?php
 				$mcax = "SELECT * FROM `collection` where YEAR(paydate) = '$year' and type = 'Market Clearance'";
@@ -500,19 +500,19 @@
 			?>
 			<tr>
 				<td> Market Clearance </td>
-				<td> <?php if($mcjan > 0){ echo number_format($mcjan); } else { echo ' - '; }?> </td>
-				<td> <?php if($mcfeb > 0){ echo number_format($mcfeb); } else { echo ' - '; }?> </td>
-				<td> <?php if($mcmar > 0){ echo number_format($mcmar); } else { echo ' - '; }?> </td>
-				<td> <?php if($mcapr > 0){ echo number_format($mcapr); } else { echo ' - '; }?> </td>
-				<td> <?php if($mcmay > 0){ echo number_format($mcmay); } else { echo ' - '; }?> </td>
-				<td> <?php if($mcjun > 0){ echo number_format($mcjun); } else { echo ' - '; }?> </td>
-				<td> <?php if($mcjul > 0){ echo number_format($mcjul); } else { echo ' - '; }?> </td>
-				<td> <?php if($mcaug > 0){ echo number_format($mcaug); } else { echo ' - '; }?> </td>
-				<td> <?php if($mcsep > 0){ echo number_format($mcsep); } else { echo ' - '; }?> </td>
-				<td> <?php if($mcoct > 0){ echo number_format($mcoct); } else { echo ' - '; }?> </td>
-				<td> <?php if($mcnov > 0){ echo number_format($mcnov); } else { echo ' - '; }?> </td>
-				<td> <?php if($mcdec > 0){ echo number_format($mcdec); } else { echo ' - '; }?> </td>
-				<td> <b><?php if($mctotal > 0){ echo number_format($mctotal); } else { echo ' - '; }?> </td>
+				<td> <?php if($mcjan > 0){ echo number_format($mcjan,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($mcfeb > 0){ echo number_format($mcfeb,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($mcmar > 0){ echo number_format($mcmar,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($mcapr > 0){ echo number_format($mcapr,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($mcmay > 0){ echo number_format($mcmay,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($mcjun > 0){ echo number_format($mcjun,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($mcjul > 0){ echo number_format($mcjul,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($mcaug > 0){ echo number_format($mcaug,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($mcsep > 0){ echo number_format($mcsep,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($mcoct > 0){ echo number_format($mcoct,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($mcnov > 0){ echo number_format($mcnov,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($mcdec > 0){ echo number_format($mcdec,2); } else { echo ' - '; }?> </td>
+				<td> <b><?php if($mctotal > 0){ echo number_format($mctotal,2); } else { echo ' - '; }?> </td>
 			</tr>
 			<?php
 				$amax = "SELECT * FROM `collection` where YEAR(paydate) = '$year' and type = 'Anti Mortem'";
@@ -564,19 +564,19 @@
 			?>
 			<tr>
 				<td> Anti - Mortem </td>
-				<td> <?php if($amjan > 0){ echo number_format($amjan); } else { echo ' - '; }?> </td>
-				<td> <?php if($amfeb > 0){ echo number_format($amfeb); } else { echo ' - '; }?> </td>
-				<td> <?php if($ammar > 0){ echo number_format($ammar); } else { echo ' - '; }?> </td>
-				<td> <?php if($amapr > 0){ echo number_format($amapr); } else { echo ' - '; }?> </td>
-				<td> <?php if($ammay > 0){ echo number_format($ammay); } else { echo ' - '; }?> </td>
-				<td> <?php if($amjun > 0){ echo number_format($amjun); } else { echo ' - '; }?> </td>
-				<td> <?php if($amjul > 0){ echo number_format($amjul); } else { echo ' - '; }?> </td>
-				<td> <?php if($amaug > 0){ echo number_format($amaug); } else { echo ' - '; }?> </td>
-				<td> <?php if($amsep > 0){ echo number_format($amsep); } else { echo ' - '; }?> </td>
-				<td> <?php if($amoct > 0){ echo number_format($amoct); } else { echo ' - '; }?> </td>
-				<td> <?php if($amnov > 0){ echo number_format($amnov); } else { echo ' - '; }?> </td>
-				<td> <?php if($amdec > 0){ echo number_format($amdec); } else { echo ' - '; }?> </td>
-				<td> <b><?php if($amtotal > 0){ echo number_format($amtotal); } else { echo ' - '; }?> </td>
+				<td> <?php if($amjan > 0){ echo number_format($amjan,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($amfeb > 0){ echo number_format($amfeb,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($ammar > 0){ echo number_format($ammar,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($amapr > 0){ echo number_format($amapr,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($ammay > 0){ echo number_format($ammay,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($amjun > 0){ echo number_format($amjun,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($amjul > 0){ echo number_format($amjul,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($amaug > 0){ echo number_format($amaug,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($amsep > 0){ echo number_format($amsep,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($amoct > 0){ echo number_format($amoct,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($amnov > 0){ echo number_format($amnov,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($amdec > 0){ echo number_format($amdec,2); } else { echo ' - '; }?> </td>
+				<td> <b><?php if($amtotal > 0){ echo number_format($amtotal,2); } else { echo ' - '; }?> </td>
 			</tr>
 			<?php
 				$pmax = "SELECT * FROM `collection` where YEAR(paydate) = '$year' and type = 'Post Mortem'";
@@ -628,19 +628,19 @@
 			?>
 			<tr>
 				<td> Post - Mortem </td>
-				<td> <?php if($pmjan > 0){ echo number_format($pmjan); } else { echo ' - '; }?> </td>
-				<td> <?php if($pmfeb > 0){ echo number_format($pmfeb); } else { echo ' - '; }?> </td>
-				<td> <?php if($pmmar > 0){ echo number_format($pmmar); } else { echo ' - '; }?> </td>
-				<td> <?php if($pmapr > 0){ echo number_format($pmapr); } else { echo ' - '; }?> </td>
-				<td> <?php if($pmmay > 0){ echo number_format($pmmay); } else { echo ' - '; }?> </td>
-				<td> <?php if($pmjun > 0){ echo number_format($pmjun); } else { echo ' - '; }?> </td>
-				<td> <?php if($pmjul > 0){ echo number_format($pmjul); } else { echo ' - '; }?> </td>
-				<td> <?php if($pmaug > 0){ echo number_format($pmaug); } else { echo ' - '; }?> </td>
-				<td> <?php if($pmsep > 0){ echo number_format($pmsep); } else { echo ' - '; }?> </td>
-				<td> <?php if($pmoct > 0){ echo number_format($pmoct); } else { echo ' - '; }?> </td>
-				<td> <?php if($pmnov > 0){ echo number_format($pmnov); } else { echo ' - '; }?> </td>
-				<td> <?php if($pmdec > 0){ echo number_format($pmdec); } else { echo ' - '; }?> </td>
-				<td> <b><?php if($pmtotal > 0){ echo number_format($pmtotal); } else { echo ' - '; }?> </td>
+				<td> <?php if($pmjan > 0){ echo number_format($pmjan,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($pmfeb > 0){ echo number_format($pmfeb,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($pmmar > 0){ echo number_format($pmmar,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($pmapr > 0){ echo number_format($pmapr,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($pmmay > 0){ echo number_format($pmmay,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($pmjun > 0){ echo number_format($pmjun,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($pmjul > 0){ echo number_format($pmjul,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($pmaug > 0){ echo number_format($pmaug,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($pmsep > 0){ echo number_format($pmsep,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($pmoct > 0){ echo number_format($pmoct,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($pmnov > 0){ echo number_format($pmnov,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($pmdec > 0){ echo number_format($pmdec,2); } else { echo ' - '; }?> </td>
+				<td> <b><?php if($pmtotal > 0){ echo number_format($pmtotal,2); } else { echo ' - '; }?> </td>
 			</tr>
 			<?php
 				$gwax = "SELECT * FROM `collection` where YEAR(paydate) = '$year' and type = 'Goodwill'";
@@ -692,19 +692,19 @@
 			?>
 			<tr>
 				<td> Goodwill </td>
-				<td> <?php if($gwjan > 0){ echo number_format($gwjan); } else { echo ' - '; }?> </td>
-				<td> <?php if($gwfeb > 0){ echo number_format($gwfeb); } else { echo ' - '; }?> </td>
-				<td> <?php if($gwmar > 0){ echo number_format($gwmar); } else { echo ' - '; }?> </td>
-				<td> <?php if($gwapr > 0){ echo number_format($gwapr); } else { echo ' - '; }?> </td>
-				<td> <?php if($gwmay > 0){ echo number_format($gwmay); } else { echo ' - '; }?> </td>
-				<td> <?php if($gwjun > 0){ echo number_format($gwjun); } else { echo ' - '; }?> </td>
-				<td> <?php if($gwjul > 0){ echo number_format($gwjul); } else { echo ' - '; }?> </td>
-				<td> <?php if($gwaug > 0){ echo number_format($gwaug); } else { echo ' - '; }?> </td>
-				<td> <?php if($gwsep > 0){ echo number_format($gwsep); } else { echo ' - '; }?> </td>
-				<td> <?php if($gwoct > 0){ echo number_format($gwoct); } else { echo ' - '; }?> </td>
-				<td> <?php if($gwnov > 0){ echo number_format($gwnov); } else { echo ' - '; }?> </td>
-				<td> <?php if($gwdec > 0){ echo number_format($gwdec); } else { echo ' - '; }?> </td>
-				<td> <b><?php if($gwtotal > 0){ echo number_format($gwtotal); } else { echo ' - '; }?> </td>
+				<td> <?php if($gwjan > 0){ echo number_format($gwjan,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($gwfeb > 0){ echo number_format($gwfeb,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($gwmar > 0){ echo number_format($gwmar,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($gwapr > 0){ echo number_format($gwapr,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($gwmay > 0){ echo number_format($gwmay,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($gwjun > 0){ echo number_format($gwjun,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($gwjul > 0){ echo number_format($gwjul,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($gwaug > 0){ echo number_format($gwaug,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($gwsep > 0){ echo number_format($gwsep,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($gwoct > 0){ echo number_format($gwoct,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($gwnov > 0){ echo number_format($gwnov,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($gwdec > 0){ echo number_format($gwdec,2); } else { echo ' - '; }?> </td>
+				<td> <b><?php if($gwtotal > 0){ echo number_format($gwtotal,2); } else { echo ' - '; }?> </td>
 			</tr>
 			<?php
 				$tfax = "SELECT * FROM `collection` where YEAR(paydate) = '$year' and type = 'Transfer Fee'";
@@ -756,19 +756,19 @@
 			?>
 			<tr>
 				<td> Transfer Fee </td>
-				<td> <?php if($tfjan > 0){ echo number_format($tfjan); } else { echo ' - '; }?> </td>
-				<td> <?php if($tffeb > 0){ echo number_format($tffeb); } else { echo ' - '; }?> </td>
-				<td> <?php if($tfmar > 0){ echo number_format($tfmar); } else { echo ' - '; }?> </td>
-				<td> <?php if($tfapr > 0){ echo number_format($tfapr); } else { echo ' - '; }?> </td>
-				<td> <?php if($tfmay > 0){ echo number_format($tfmay); } else { echo ' - '; }?> </td>
-				<td> <?php if($tfjun > 0){ echo number_format($tfjun); } else { echo ' - '; }?> </td>
-				<td> <?php if($tfjul > 0){ echo number_format($tfjul); } else { echo ' - '; }?> </td>
-				<td> <?php if($tfaug > 0){ echo number_format($tfaug); } else { echo ' - '; }?> </td>
-				<td> <?php if($tfsep > 0){ echo number_format($tfsep); } else { echo ' - '; }?> </td>
-				<td> <?php if($tfoct > 0){ echo number_format($tfoct); } else { echo ' - '; }?> </td>
-				<td> <?php if($tfnov > 0){ echo number_format($tfnov); } else { echo ' - '; }?> </td>
-				<td> <?php if($tfdec > 0){ echo number_format($tfdec); } else { echo ' - '; }?> </td>
-				<td> <b><?php if($tftotal > 0){ echo number_format($tftotal); } else { echo ' - '; }?> </td>
+				<td> <?php if($tfjan > 0){ echo number_format($tfjan,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($tffeb > 0){ echo number_format($tffeb,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($tfmar > 0){ echo number_format($tfmar,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($tfapr > 0){ echo number_format($tfapr,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($tfmay > 0){ echo number_format($tfmay,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($tfjun > 0){ echo number_format($tfjun,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($tfjul > 0){ echo number_format($tfjul,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($tfaug > 0){ echo number_format($tfaug,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($tfsep > 0){ echo number_format($tfsep,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($tfoct > 0){ echo number_format($tfoct,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($tfnov > 0){ echo number_format($tfnov,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($tfdec > 0){ echo number_format($tfdec,2); } else { echo ' - '; }?> </td>
+				<td> <b><?php if($tftotal > 0){ echo number_format($tftotal,2); } else { echo ' - '; }?> </td>
 			</tr>
 			<?php
 				$srax = "SELECT * FROM `collection` where YEAR(paydate) = '$year' and type = 'Space Rental'";
@@ -820,19 +820,19 @@
 			?>
 			<tr>
 				<td> Space Rental </td>
-				<td> <?php if($srjan > 0){ echo number_format($srjan); } else { echo ' - '; }?> </td>
-				<td> <?php if($srfeb > 0){ echo number_format($srfeb); } else { echo ' - '; }?> </td>
-				<td> <?php if($srmar > 0){ echo number_format($srmar); } else { echo ' - '; }?> </td>
-				<td> <?php if($srapr > 0){ echo number_format($srapr); } else { echo ' - '; }?> </td>
-				<td> <?php if($srmay > 0){ echo number_format($srmay); } else { echo ' - '; }?> </td>
-				<td> <?php if($srjun > 0){ echo number_format($srjun); } else { echo ' - '; }?> </td>
-				<td> <?php if($srjul > 0){ echo number_format($srjul); } else { echo ' - '; }?> </td>
-				<td> <?php if($sraug > 0){ echo number_format($sraug); } else { echo ' - '; }?> </td>
-				<td> <?php if($srsep > 0){ echo number_format($srsep); } else { echo ' - '; }?> </td>
-				<td> <?php if($sroct > 0){ echo number_format($sroct); } else { echo ' - '; }?> </td>
-				<td> <?php if($srnov > 0){ echo number_format($srnov); } else { echo ' - '; }?> </td>
-				<td> <?php if($srdec > 0){ echo number_format($srdec); } else { echo ' - '; }?> </td>
-				<td> <b><?php if($srtotal > 0){ echo number_format($srtotal); } else { echo ' - '; }?> </td>
+				<td> <?php if($srjan > 0){ echo number_format($srjan,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($srfeb > 0){ echo number_format($srfeb,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($srmar > 0){ echo number_format($srmar,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($srapr > 0){ echo number_format($srapr,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($srmay > 0){ echo number_format($srmay,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($srjun > 0){ echo number_format($srjun,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($srjul > 0){ echo number_format($srjul,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($sraug > 0){ echo number_format($sraug,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($srsep > 0){ echo number_format($srsep,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($sroct > 0){ echo number_format($sroct,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($srnov > 0){ echo number_format($srnov,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($srdec > 0){ echo number_format($srdec,2); } else { echo ' - '; }?> </td>
+				<td> <b><?php if($srtotal > 0){ echo number_format($srtotal,2); } else { echo ' - '; }?> </td>
 			</tr>
 			<?php
 				$tctax = "SELECT * FROM `collection` where YEAR(paydate) = '$year' and type = 'TCT'";
@@ -884,19 +884,19 @@
 			?>
 			<tr>
 				<td> TCT </td>
-				<td> <?php if($tctjan > 0){ echo number_format($tctjan); } else { echo ' - '; }?> </td>
-				<td> <?php if($tctfeb > 0){ echo number_format($tctfeb); } else { echo ' - '; }?> </td>
-				<td> <?php if($tctmar > 0){ echo number_format($tctmar); } else { echo ' - '; }?> </td>
-				<td> <?php if($tctapr > 0){ echo number_format($tctapr); } else { echo ' - '; }?> </td>
-				<td> <?php if($tctmay > 0){ echo number_format($tctmay); } else { echo ' - '; }?> </td>
-				<td> <?php if($tctjun > 0){ echo number_format($tctjun); } else { echo ' - '; }?> </td>
-				<td> <?php if($tctjul > 0){ echo number_format($tctjul); } else { echo ' - '; }?> </td>
-				<td> <?php if($tctaug > 0){ echo number_format($tctaug); } else { echo ' - '; }?> </td>
-				<td> <?php if($tctsep > 0){ echo number_format($tctsep); } else { echo ' - '; }?> </td>
-				<td> <?php if($tctoct > 0){ echo number_format($tctoct); } else { echo ' - '; }?> </td>
-				<td> <?php if($tctnov > 0){ echo number_format($tctnov); } else { echo ' - '; }?> </td>
-				<td> <?php if($tctdec > 0){ echo number_format($tctdec); } else { echo ' - '; }?> </td>
-				<td> <b><?php if($tcttotal > 0){ echo number_format($tcttotal); } else { echo ' - '; }?> </td>
+				<td> <?php if($tctjan > 0){ echo number_format($tctjan,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($tctfeb > 0){ echo number_format($tctfeb,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($tctmar > 0){ echo number_format($tctmar,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($tctapr > 0){ echo number_format($tctapr,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($tctmay > 0){ echo number_format($tctmay,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($tctjun > 0){ echo number_format($tctjun,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($tctjul > 0){ echo number_format($tctjul,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($tctaug > 0){ echo number_format($tctaug,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($tctsep > 0){ echo number_format($tctsep,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($tctoct > 0){ echo number_format($tctoct,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($tctnov > 0){ echo number_format($tctnov,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($tctdec > 0){ echo number_format($tctdec,2); } else { echo ' - '; }?> </td>
+				<td> <b><?php if($tcttotal > 0){ echo number_format($tcttotal,2); } else { echo ' - '; }?> </td>
 			</tr>
 			<?php
 				$wbax = "SELECT * FROM `collection` where YEAR(paydate) = '$year' and type = 'Water Bill'";
@@ -948,19 +948,19 @@
 			?>
 			<tr>
 				<td> Water Bill </td>
-				<td> <?php if($wbjan > 0){ echo number_format($wbjan); } else { echo ' - '; }?> </td>
-				<td> <?php if($wbfeb > 0){ echo number_format($wbfeb); } else { echo ' - '; }?> </td>
-				<td> <?php if($wbmar > 0){ echo number_format($wbmar); } else { echo ' - '; }?> </td>
-				<td> <?php if($wbapr > 0){ echo number_format($wbapr); } else { echo ' - '; }?> </td>
-				<td> <?php if($wbmay > 0){ echo number_format($wbmay); } else { echo ' - '; }?> </td>
-				<td> <?php if($wbjun > 0){ echo number_format($wbjun); } else { echo ' - '; }?> </td>
-				<td> <?php if($wbjul > 0){ echo number_format($wbjul); } else { echo ' - '; }?> </td>
-				<td> <?php if($wbaug > 0){ echo number_format($wbaug); } else { echo ' - '; }?> </td>
-				<td> <?php if($wbsep > 0){ echo number_format($wbsep); } else { echo ' - '; }?> </td>
-				<td> <?php if($wboct > 0){ echo number_format($wboct); } else { echo ' - '; }?> </td>
-				<td> <?php if($wbnov > 0){ echo number_format($wbnov); } else { echo ' - '; }?> </td>
-				<td> <?php if($wbdec > 0){ echo number_format($wbdec); } else { echo ' - '; }?> </td>
-				<td> <b><?php if($wbtotal > 0){ echo number_format($wbtotal); } else { echo ' - '; }?> </td>
+				<td> <?php if($wbjan > 0){ echo number_format($wbjan,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($wbfeb > 0){ echo number_format($wbfeb,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($wbmar > 0){ echo number_format($wbmar,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($wbapr > 0){ echo number_format($wbapr,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($wbmay > 0){ echo number_format($wbmay,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($wbjun > 0){ echo number_format($wbjun,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($wbjul > 0){ echo number_format($wbjul,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($wbaug > 0){ echo number_format($wbaug,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($wbsep > 0){ echo number_format($wbsep,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($wboct > 0){ echo number_format($wboct,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($wbnov > 0){ echo number_format($wbnov,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($wbdec > 0){ echo number_format($wbdec,2); } else { echo ' - '; }?> </td>
+				<td> <b><?php if($wbtotal > 0){ echo number_format($wbtotal,2); } else { echo ' - '; }?> </td>
 			</tr>
 			<?php
 				$certax = "SELECT * FROM `collection` where YEAR(paydate) = '$year' and type = 'Certification'";
@@ -1012,36 +1012,36 @@
 			?>
 			<tr>
 				<td> Certification </td>
-				<td> <?php if($certjan > 0){ echo number_format($certjan); } else { echo ' - '; }?> </td>
-				<td> <?php if($certfeb > 0){ echo number_format($certfeb); } else { echo ' - '; }?> </td>
-				<td> <?php if($certmar > 0){ echo number_format($certmar); } else { echo ' - '; }?> </td>
-				<td> <?php if($certapr > 0){ echo number_format($certapr); } else { echo ' - '; }?> </td>
-				<td> <?php if($certmay > 0){ echo number_format($certmay); } else { echo ' - '; }?> </td>
-				<td> <?php if($certjun > 0){ echo number_format($certjun); } else { echo ' - '; }?> </td>
-				<td> <?php if($certjul > 0){ echo number_format($certjul); } else { echo ' - '; }?> </td>
-				<td> <?php if($certaug > 0){ echo number_format($certaug); } else { echo ' - '; }?> </td>
-				<td> <?php if($certsep > 0){ echo number_format($certsep); } else { echo ' - '; }?> </td>
-				<td> <?php if($certoct > 0){ echo number_format($certoct); } else { echo ' - '; }?> </td>
-				<td> <?php if($certnov > 0){ echo number_format($certnov); } else { echo ' - '; }?> </td>
-				<td> <?php if($certdec > 0){ echo number_format($certdec); } else { echo ' - '; }?> </td>
-				<td> <b><?php if($certtotal > 0){ echo number_format($certtotal); } else { echo ' - '; }?> </td>
+				<td> <?php if($certjan > 0){ echo number_format($certjan,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($certfeb > 0){ echo number_format($certfeb,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($certmar > 0){ echo number_format($certmar,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($certapr > 0){ echo number_format($certapr,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($certmay > 0){ echo number_format($certmay,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($certjun > 0){ echo number_format($certjun,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($certjul > 0){ echo number_format($certjul,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($certaug > 0){ echo number_format($certaug,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($certsep > 0){ echo number_format($certsep,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($certoct > 0){ echo number_format($certoct,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($certnov > 0){ echo number_format($certnov,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($certdec > 0){ echo number_format($certdec,2); } else { echo ' - '; }?> </td>
+				<td> <b><?php if($certtotal > 0){ echo number_format($certtotal,2); } else { echo ' - '; }?> </td>
 			</tr>
 			<tr>
 				<?php $mototal = $jan + $feb + $mar + $apr + $may + $jun + $jul + $aug + $sep + $oct + $nov + $dec; ?>
 				<td> <b>Total </td>
-				<td> <b><?php if($jan > 0){ echo number_format($jan); } else { echo ' - '; } ?> </td>
-				<td> <b><?php if($feb > 0){ echo number_format($feb); } else { echo ' - '; } ?> </td>
-				<td> <b><?php if($mar > 0){ echo number_format($mar); } else { echo ' - '; } ?> </td>
-				<td> <b><?php if($apr > 0){ echo number_format($apr); } else { echo ' - '; } ?> </td>
-				<td> <b><?php if($may > 0){ echo number_format($may); } else { echo ' - '; } ?> </td>
-				<td> <b><?php if($jun > 0){ echo number_format($jun); } else { echo ' - '; } ?> </td>
-				<td> <b><?php if($jul > 0){ echo number_format($jul); } else { echo ' - '; } ?> </td>
-				<td> <b><?php if($aug > 0){ echo number_format($aug); } else { echo ' - '; } ?> </td>
-				<td> <b><?php if($sep > 0){ echo number_format($sep); } else { echo ' - '; } ?> </td>
-				<td> <b><?php if($oct > 0){ echo number_format($oct); } else { echo ' - '; } ?> </td>
-				<td> <b><?php if($nov > 0){ echo number_format($nov); } else { echo ' - '; } ?> </td>
-				<td> <b><?php if($dec > 0){ echo number_format($dec); } else { echo ' - '; } ?> </td>
-				<td> <b><?php if($mototal > 0){ echo number_format($mototal); } else { echo ' - '; } ?> </td>
+				<td> <b><?php if($jan > 0){ echo number_format($jan,2); } else { echo ' - '; } ?> </td>
+				<td> <b><?php if($feb > 0){ echo number_format($feb,2); } else { echo ' - '; } ?> </td>
+				<td> <b><?php if($mar > 0){ echo number_format($mar,2); } else { echo ' - '; } ?> </td>
+				<td> <b><?php if($apr > 0){ echo number_format($apr,2); } else { echo ' - '; } ?> </td>
+				<td> <b><?php if($may > 0){ echo number_format($may,2); } else { echo ' - '; } ?> </td>
+				<td> <b><?php if($jun > 0){ echo number_format($jun,2); } else { echo ' - '; } ?> </td>
+				<td> <b><?php if($jul > 0){ echo number_format($jul,2); } else { echo ' - '; } ?> </td>
+				<td> <b><?php if($aug > 0){ echo number_format($aug,2); } else { echo ' - '; } ?> </td>
+				<td> <b><?php if($sep > 0){ echo number_format($sep,2); } else { echo ' - '; } ?> </td>
+				<td> <b><?php if($oct > 0){ echo number_format($oct,2); } else { echo ' - '; } ?> </td>
+				<td> <b><?php if($nov > 0){ echo number_format($nov,2); } else { echo ' - '; } ?> </td>
+				<td> <b><?php if($dec > 0){ echo number_format($dec,2); } else { echo ' - '; } ?> </td>
+				<td> <b><?php if($mototal > 0){ echo number_format($mototal,2); } else { echo ' - '; } ?> </td>
 			</tr>
 		</tbody>
 	</table>
