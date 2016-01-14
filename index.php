@@ -31,7 +31,7 @@
             		<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="icon-drawer"></span> Store Management <b class="caret"></b></a>
             		<ul class="dropdown-menu" role="menu">
                 		<li><a role = "button" href = "?module=newstore"><span class="icon-plus"></span> New Store Application </a></li>
-                		<li><a role = "button" href = "?module=storelist"><span class="icon-file-text2"></span> Store List </a></li>
+                		<li><a role = "button" href = "?module=storelist"><span class="icon-list"></span> Store List </a></li>
             			<li><a role = "button" href = "?module=issuance"><span class="icon-folder-plus"></span> OR Issuance </a></li>
             		
             			<!--<li><a role = "button" href = "?module=newowner"> Add New Owner </a></li>-->					
@@ -45,10 +45,11 @@
             	</li>
             	<?php if($_SESSION['level']=="Administrator"){ ?>
 				<li class="dropdown">
-	            	<a href="#" class="dropdown-toggle" data-toggle="dropdown"> System Management <b class="caret"></b></a>
+	            	<a href="#" class="dropdown-toggle" data-toggle="dropdown"> <span class="icon-cogs"></span> System Management <b class="caret"></b></a>
 	            	<ul class="dropdown-menu" role="menu">
-						<li><a role = "button" href = "?module=newuser"> Add New User </a></li>
-						<li><a role = "button" href = "?module=userlist"> User List </a></li>
+	            		<li><a role = "button" href = "?module=resettings"> <span class="icon-cog"></span> Report Settings </a></li>
+						<li><a role = "button" href = "?module=newuser"> <span class = "icon-user-plus"></span> Add New User </a></li>
+						<li><a role = "button" href = "?module=userlist"> <span class = "icon-users"></span> User List </a></li>
 	            	</ul>
 	            </li> 	<?php } ?></ul>
         	<ul class="nav navbar-nav navbar-right">
@@ -116,7 +117,7 @@
 		if($result->num_rows > 0){
 			while($row = $result->fetch_assoc()){								
 				$_SESSION['acc_id'] = $row['account_id'];
-				$_SESSION['name']=$row['fname']." ".$row['mname']." ".$row['lname'];
+				$_SESSION['name']=$row['fname']." ".$row['lname'];
 				$_SESSION['level']=$row['level'];
 			  	echo  '<div class="alert alert-success" align = "center">						
 						<strong>Logging in ~!</strong>
