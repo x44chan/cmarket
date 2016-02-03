@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 	$sql = "SELECT * FROM `store`,`owner` where store.owner_id = owner.owner_id";
 	$result = $conn->query($sql);		
 	if($result->num_rows > 0){
@@ -41,11 +41,18 @@
 		$total = 0;
 		while ($row = $result->fetch_assoc()) {
 			$amount = $row['area'] * $row['multi'] * 30;
-			if($row['status']==1){
+			if($row['status']==0){
 			$row['status']="Active";
 			}else{
 			$row['status']="Close";
 			}
+			$peri=0;
+			if($row['periperals']==1){
+			$peri=100;
+			}else{
+			$peri=0;
+			}
+			$amount=$amount+$peri;
 			echo '<div class = "row">
 					<div class = "col-xs-2">
 						'. $row['lname'] . ', ' . $row['fname'] . ' ' . $row['mname'] .'

@@ -1,4 +1,4 @@
-<div class="container">
+﻿<div class="container">
 	<form action="" method="post">
 		<div id = "storename">
 			<div class="row" style="margin-left: -50px;">
@@ -105,8 +105,8 @@
 			</div>
 			<div class="row">
 				<div class = "col-xs-12">
-					<label>Classification: <font color="red"> * </font></label> 
-					<select class="form-control input-sm" name = "classification" required>
+					<label>Classification: </label> 
+					<select class="form-control input-sm" name = "classification" >
 						<option value="">---------</option>
 						<option value="Canteen">Canteen</option>
 						<option value="Fruits & Vegetables">Fruits & Vegetables</option>

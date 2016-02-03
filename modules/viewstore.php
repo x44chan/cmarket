@@ -1,4 +1,4 @@
-<div class="container">
+﻿<div class="container">
 	<form action="" method="post">
 		<div id = "storename">
 			<div class="row" style="margin-left: -50px;">
@@ -102,7 +102,7 @@
 			<div class="row">
 				<div class = "col-xs-12">
 					<label>Classification: <font color="red"> * </font></label> 
-					<select class="form-control input-sm" name = "classification" required>
+					<select class="form-control input-sm" name = "classification">
 						<option value="">---------</option>
 						<option value="Canteen" <?php if($data['classification'] == 'Canteen'){ echo ' selected '; } ?>>Canteen</option>
 						<option value="Fruits & Vegetables" <?php if($data['classification'] == 'Fruits & Vegetables'){ echo ' selected '; } ?>>Fruits & Vegetables</option>
@@ -126,7 +126,7 @@
 		
 		<div class="row">
 			<div class="col-xs-12" align="center">
-				<?php if($data['status'] == '1') { ?><button class="btn btn-primary btn-sm" type = "submit" name = "upsub"><span class = "icon-checkmark"></span> Update Record </button> <a href = "?module=storedel&x=<?php echo $data['store_id']; ?>" class="btn btn-danger btn-sm" onClick="return confirm('Confirm Action');" ><span class="icon-cross"></span> Close Store </a> <?php } ?> &nbsp;<a href = "?module=storelist" class="btn btn-warning btn-sm"><span class = " icon-exit"></span> Back to List </a>
+				<?php if($data['status'] > 0) { ?><button class="btn btn-primary btn-sm" type = "submit" name = "upsub"><span class = "icon-checkmark"></span> Update Record </button> <a href = "?module=storedel&x=<?php echo $data['store_id']; ?>" class="btn btn-danger btn-sm" onClick="return confirm('Confirm Action');" ><span class="icon-cross"></span> Close Store </a> <?php } ?> &nbsp;<a href = "?module=storelist" class="btn btn-warning btn-sm"><span class = " icon-exit"></span> Back to List </a>
 			</div>
 		</div>
 	</form>

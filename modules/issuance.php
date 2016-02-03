@@ -19,7 +19,7 @@
 				<select class="form-control input-sm" required name = "issuedto" id = "slctown">
 						<option value=""> ---------- </option>	
 						<?php
-							$stmt = "SELECT * FROM user  where level = 'Collector' ORDER BY lname";
+							$stmt = "SELECT * FROM user  where level = 'Administrator' ORDER BY lname";
 							$result = $conn->query($stmt);		
 							if($result->num_rows > 0){
 								while($row = $result->fetch_assoc()){								

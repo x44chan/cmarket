@@ -14,6 +14,33 @@ if(isset($_GET['q'])){
 }
 ?>
 
+
+<?php
+if(isset($_GET['x'])){
+	$q = intval($_GET['x']);
+	include '../config/conf.php';
+	$sql = "SELECT * FROM `orissuance` where invoiceno = '$q' ";
+	$result = $conn->query($sql);		
+	if($result->num_rows > 0){
+		echo '<option value="">-------</option>';
+		while($row = $result->fetch_assoc()){	
+
+$orfroms=$row['orfrom'];
+$ortos=$row['orto']+1;		
+while($orfroms < $ortos) {
+			$sql = "SELECT * FROM `collection` where ornum = '$orfroms' ";
+				$result = $conn->query($sql);
+						if($result->num_rows >	 0){
+					  }else{
+								echo '<option value = "'.$orfroms.'">' . $orfroms .' </option>'; 
+						}
+			$orfroms++;}
+		}
+	}
+	$conn->close();
+}
+?>
+
 <?php
 	if(isset($_GET['o'])){
 		$o = intval($_GET['o']);
@@ -25,18 +52,34 @@ if(isset($_GET['q'])){
 				if($row['multi'] == ""){
 					$row['multi'] = 4;
 				}
+				if($row['periperals']==0){
+					$dmonthly=number_format($row['area'] * $row['multi'] * 30, 2);}
+				else{
+					$dmonthly=number_format($row['area'] * $row['multi'] * 30+100, 2);
+				}
+				
+				$dmonthly = str_replace(",","",$dmonthly);
+				$x=number_format($dmonthly/30, 2);
+				$x = str_replace(",","",$x);
+				$y=number_format($x*7, 2);
+				
 				echo '
+				
+				
+				
+				
+				
 				<div class="col-xs-2">
 					<label>Daily Fee</label>
-					<input type = "text" readonly class = "form-control input-sm" value = "'. number_format($row['area'] * $row['multi'], 2) .'"/>
+					<input type = "text" readonly class = "form-control input-sm" value = "'.$x .'"/>
 				</div>
 				<div class="col-xs-2">
 					<label>Weekly Fee</label>
-					<input type = "text" readonly class = "form-control input-sm" value = "'. number_format($row['area'] * $row['multi'] * 7, 2) .'"/>
+					<input type = "text" readonly class = "form-control input-sm" value = "'. $y .'"/>
 				</div>				
 				<div class="col-xs-2">
 					<label>Monthly Fee</label>
-					<input type = "text" readonly class = "form-control input-sm" value = "'. number_format($row['area'] * $row['multi'] * 30, 2) .'"/>
+					<input type = "text" readonly class = "form-control input-sm" value = "'.$dmonthly .'"/>
 				</div>';					  
 			}
 		}

@@ -1,4 +1,4 @@
-<?php if(!isset($_GET['action'])) { ?>
+﻿<?php if(!isset($_GET['action'])) { ?>
 <script type="text/javascript">
 	$(document).ready( function () {
 		$("button[ name = 'collsub']").on("click", function(){
@@ -155,7 +155,27 @@ function showUser(str) {
 	    xmlhttp.send();
 	}
 }
-
+function showOR(str) {
+	if (str == "") {
+	    document.getElementById("ornom").innerHTML = "";
+	    return;
+	} else { 
+	    if (window.XMLHttpRequest) {
+	        // code for IE7+, Firefox, Chrome, Opera, Safari
+	        xmlhttp = new XMLHttpRequest();
+	    } else {
+	        // code for IE6, IE5
+	        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+	    }
+	    xmlhttp.onreadystatechange = function() {
+	        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+	            document.getElementById("ornom").innerHTML = xmlhttp.responseText;
+	        }
+	    };
+	    xmlhttp.open("GET","ajax/ajaxowner.php?x="+str,true);
+	    xmlhttp.send();
+	}
+}
 function fee(str) {
     if (str == "") {
         document.getElementById("dfee").innerHTML = '<div class="col-xs-2"><label>Daily Fee</label><input type = "text" readonly class = "form-control input-sm" value = "0"/></div><div class="col-xs-2"><label>Weekly Fee</label><input type = "text" readonly class = "form-control input-sm" value = "0"/></div><div class="col-xs-2"><label>Monthly Fee</label><input type = "text" readonly class = "form-control input-sm" value = "0"/></div>';
@@ -189,11 +209,27 @@ function fee(str) {
 		<div class="row">
 			<div class="col-xs-2">
 				<label>Invoice #: <font color="red">*</font></label>
-				<input type = "text" pattern = "[0-9]*" required class="form-control input-sm" name = "invoicenum" placeholder = "Invoice #" autocomplete = "off">
+				<select required class="form-control input-sm" name = "invoicenum" placeholder = "Invoice #" id="invoice" autocomplete = "off" onchange="showOR(this.value)">
+				<option value=""> ---------- </option>
+					<?php
+						$stmt = "SELECT * FROM orissuance where issueddate = curdate() and issuedto = '$_SESSION[acc_id]'";;
+						$result = $conn->query($stmt);		
+						if($result->num_rows > 0){
+							while($row = $result->fetch_assoc()){								
+								echo '<option value ="' . $row['invoiceno'] . '">' . $row['invoiceno'] . '</option>';
+							}
+						}
+					?>					
+				</select>
 			</div>
 			<div class="col-xs-4">
 				<label>OR Number: <font color="red">*</font></label>
-				<input required name="ornum" type="text" class="form-control input-sm" placeholder = "Enter OR #" autocomplete = "off" pattern = "[0-9]*"/>
+				<select required name="ornum" type="text" class="form-control input-sm" placeholder = "Enter OR #" id="ornom" autocomplete = "off"/>
+				<option value=""> ---------- </option>
+					<?php
+		
+					?>			
+				</select>
 			</div>
 			<div class="col-xs-4">
 				<label>Date of Collection: <font color="red">*</font></label>
@@ -526,7 +562,7 @@ function fee(str) {
 		if(isset($_POST['mfeeamount']) && !empty($_POST['mfeeamount'])){
 			$type = "Market Fee";
 			$stmt = $conn->prepare("INSERT INTO collection (paydate, invoice, store_id, owner_id, ornum, amount, datefr, dateto, type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-			$stmt->bind_param("ssiiiisss", $_POST['datecollect'], $_POST['invoicenum'], $_POST['strename'], $_POST['streown'], $_POST['ornum'], $_POST['mfeeamount'], $_POST['mfeedatefr'], $_POST['mfeedateto'], $type);	
+			$stmt->bind_param("ssiiidsss", $_POST['datecollect'], $_POST['invoicenum'], $_POST['strename'], $_POST['streown'], $_POST['ornum'], $_POST['mfeeamount'], $_POST['mfeedatefr'], $_POST['mfeedateto'], $type);	
 			if($stmt->execute()){
 				$count += 1;
 			}
@@ -534,7 +570,7 @@ function fee(str) {
 		if(isset($_POST['ebillamount']) && !empty($_POST['ebillamount'])){
 			$type = "Electric Bill";
 			$stmt = $conn->prepare("INSERT INTO collection (paydate, invoice, store_id, owner_id, ornum, amount, datefr, dateto, type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-			$stmt->bind_param("ssiiiisss", $_POST['datecollect'], $_POST['invoicenum'], $_POST['strename'], $_POST['streown'], $_POST['ornum'], $_POST['ebillamount'], $_POST['ebilldatefr'], $_POST['ebilldateto'], $type);	
+			$stmt->bind_param("ssiiidsss", $_POST['datecollect'], $_POST['invoicenum'], $_POST['strename'], $_POST['streown'], $_POST['ornum'], $_POST['ebillamount'], $_POST['ebilldatefr'], $_POST['ebilldateto'], $type);	
 			if($stmt->execute()){
 				$count += 1;
 			}
@@ -542,7 +578,7 @@ function fee(str) {
 		if(isset($_POST['wbillamount']) && !empty($_POST['wbillamount'])){
 			$type = "Water Bill";
 			$stmt = $conn->prepare("INSERT INTO collection (paydate, invoice, store_id, owner_id, ornum, amount, datefr, dateto, type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-			$stmt->bind_param("ssiiiisss", $_POST['datecollect'], $_POST['invoicenum'], $_POST['strename'], $_POST['streown'], $_POST['ornum'], $_POST['wbillamount'], $_POST['wbilldatefr'], $_POST['wbilldateto'], $type);	
+			$stmt->bind_param("ssiiidsss", $_POST['datecollect'], $_POST['invoicenum'], $_POST['strename'], $_POST['streown'], $_POST['ornum'], $_POST['wbillamount'], $_POST['wbilldatefr'], $_POST['wbilldateto'], $type);	
 			if($stmt->execute()){
 				$count += 1;
 			}
@@ -550,7 +586,7 @@ function fee(str) {
 		if(isset($_POST['mcamount']) && !empty($_POST['mcamount'])){
 			$type = "Market Clearance";
 			$stmt = $conn->prepare("INSERT INTO collection (paydate, invoice, store_id, owner_id, ornum, amount, type) VALUES (?, ?, ?, ?, ?, ?, ?)");
-			$stmt->bind_param("ssiiiis", $_POST['datecollect'], $_POST['invoicenum'], $_POST['strename'], $_POST['streown'], $_POST['ornum'], $_POST['mcamount'], $type);	
+			$stmt->bind_param("ssiiids", $_POST['datecollect'], $_POST['invoicenum'], $_POST['strename'], $_POST['streown'], $_POST['ornum'], $_POST['mcamount'], $type);	
 			if($stmt->execute()){
 				$count += 1;
 			}
@@ -558,7 +594,7 @@ function fee(str) {
 		if(isset($_POST['btamount']) && !empty($_POST['btamount'])){
 			$type = "Business Tax";
 			$stmt = $conn->prepare("INSERT INTO collection (paydate, invoice, store_id, owner_id, ornum, amount, type) VALUES (?, ?, ?, ?, ?, ?, ?)");
-			$stmt->bind_param("ssiiiis", $_POST['datecollect'], $_POST['invoicenum'], $_POST['strename'], $_POST['streown'], $_POST['ornum'], $_POST['btamount'], $type);	
+			$stmt->bind_param("ssiiids", $_POST['datecollect'], $_POST['invoicenum'], $_POST['strename'], $_POST['streown'], $_POST['ornum'], $_POST['btamount'], $type);	
 			if($stmt->execute()){
 				$count += 1;
 			}
@@ -566,7 +602,7 @@ function fee(str) {
 		if(isset($_POST['sramount']) && !empty($_POST['sramount'])){
 			$type = "Space Rental";
 			$stmt = $conn->prepare("INSERT INTO collection (paydate, invoice, store_id, owner_id, ornum, amount, type) VALUES (?, ?, ?, ?, ?, ?, ?)");
-			$stmt->bind_param("ssiiiis", $_POST['datecollect'], $_POST['invoicenum'], $_POST['strename'], $_POST['streown'], $_POST['ornum'], $_POST['sramount'], $type);	
+			$stmt->bind_param("ssiiids", $_POST['datecollect'], $_POST['invoicenum'], $_POST['strename'], $_POST['streown'], $_POST['ornum'], $_POST['sramount'], $type);	
 			if($stmt->execute()){
 				$count += 1;
 			}
@@ -574,7 +610,7 @@ function fee(str) {
 		if(isset($_POST['amamount']) && !empty($_POST['amamount'])){
 			$type = "Anti Mortem";
 			$stmt = $conn->prepare("INSERT INTO collection (paydate, invoice, store_id, owner_id, ornum, amount, type) VALUES (?, ?, ?, ?, ?, ?, ?)");
-			$stmt->bind_param("ssiiiis", $_POST['datecollect'], $_POST['invoicenum'], $_POST['strename'], $_POST['streown'], $_POST['ornum'], $_POST['amamount'], $type);	
+			$stmt->bind_param("ssiiids", $_POST['datecollect'], $_POST['invoicenum'], $_POST['strename'], $_POST['streown'], $_POST['ornum'], $_POST['amamount'], $type);	
 			if($stmt->execute()){
 				$count += 1;
 			}
@@ -582,7 +618,7 @@ function fee(str) {
 		if(isset($_POST['pmamount']) && !empty($_POST['pmamount'])){
 			$type = "Post Mortem";
 			$stmt = $conn->prepare("INSERT INTO collection (paydate, invoice, store_id, owner_id, ornum, amount, type) VALUES (?, ?, ?, ?, ?, ?, ?)");
-			$stmt->bind_param("ssiiiis", $_POST['datecollect'], $_POST['invoicenum'], $_POST['strename'], $_POST['streown'], $_POST['ornum'], $_POST['pmamount'], $type);	
+			$stmt->bind_param("ssiiids", $_POST['datecollect'], $_POST['invoicenum'], $_POST['strename'], $_POST['streown'], $_POST['ornum'], $_POST['pmamount'], $type);	
 			if($stmt->execute()){
 				$count += 1;
 			}
@@ -590,7 +626,7 @@ function fee(str) {
 		if(isset($_POST['tfamount']) && !empty($_POST['tfamount'])){
 			$type = "Transfer Fee";
 			$stmt = $conn->prepare("INSERT INTO collection (paydate, invoice, store_id, owner_id, ornum, amount, type) VALUES (?, ?, ?, ?, ?, ?, ?)");
-			$stmt->bind_param("ssiiiis", $_POST['datecollect'], $_POST['invoicenum'], $_POST['strename'], $_POST['streown'], $_POST['ornum'], $_POST['tfamount'], $type);	
+			$stmt->bind_param("ssiiids", $_POST['datecollect'], $_POST['invoicenum'], $_POST['strename'], $_POST['streown'], $_POST['ornum'], $_POST['tfamount'], $type);	
 			if($stmt->execute()){
 				$count += 1;
 			}
@@ -598,7 +634,7 @@ function fee(str) {
 		if(isset($_POST['rfamount']) && !empty($_POST['rfamount'])){
 			$type = "Renewal Fee";
 			$stmt = $conn->prepare("INSERT INTO collection (paydate, invoice, store_id, owner_id, ornum, amount, type) VALUES (?, ?, ?, ?, ?, ?, ?)");
-			$stmt->bind_param("ssiiiis", $_POST['datecollect'], $_POST['invoicenum'], $_POST['strename'], $_POST['streown'], $_POST['ornum'], $_POST['rfamount'], $type);	
+			$stmt->bind_param("ssiiids", $_POST['datecollect'], $_POST['invoicenum'], $_POST['strename'], $_POST['streown'], $_POST['ornum'], $_POST['rfamount'], $type);	
 			if($stmt->execute()){
 				$count += 1;
 			}
@@ -606,7 +642,7 @@ function fee(str) {
 		if(isset($_POST['gamount']) && !empty($_POST['gamount'])){
 			$type = "Goodwill";
 			$stmt = $conn->prepare("INSERT INTO collection (paydate, invoice, store_id, owner_id, ornum, amount, type) VALUES (?, ?, ?, ?, ?, ?, ?)");
-			$stmt->bind_param("ssiiiis", $_POST['datecollect'], $_POST['invoicenum'], $_POST['strename'], $_POST['streown'], $_POST['ornum'], $_POST['gamount'], $type);	
+			$stmt->bind_param("ssiiids", $_POST['datecollect'], $_POST['invoicenum'], $_POST['strename'], $_POST['streown'], $_POST['ornum'], $_POST['gamount'], $type);	
 			if($stmt->execute()){
 				$count += 1;
 			}
@@ -614,7 +650,7 @@ function fee(str) {
 		if(isset($_POST['tctamount']) && !empty($_POST['tctamount'])){
 			$type = "TCT";
 			$stmt = $conn->prepare("INSERT INTO collection (paydate, invoice, store_id, owner_id, ornum, amount, type) VALUES (?, ?, ?, ?, ?, ?, ?)");
-			$stmt->bind_param("ssiiiis", $_POST['datecollect'], $_POST['invoicenum'], $_POST['strename'], $_POST['streown'], $_POST['ornum'], $_POST['tctamount'], $type);	
+			$stmt->bind_param("ssiiids", $_POST['datecollect'], $_POST['invoicenum'], $_POST['strename'], $_POST['streown'], $_POST['ornum'], $_POST['tctamount'], $type);	
 			if($stmt->execute()){
 				$count += 1;
 			}
@@ -736,7 +772,7 @@ function fee(str) {
 					}
 
 					if($row2['type'] == "Market Fee"){
-						$mfeeamount = '₱ ' . number_format($row2['amount']);
+						$mfeeamount = '₱ ' . number_format($row2['amount'],2);
 						$mfeecov = strtoupper($month);
 						$mfeetotal += $row2['amount'];
 					}
@@ -800,13 +836,13 @@ function fee(str) {
 		echo '<div class = "row"><div class = "col-xs-12"><h4><i>No Record Found</i></h4></div></div>';
 	}
  
-?>		</tbody>
+?>	
+	</tbody>
 	</table>
 </div>
 <?php
 	}
 ?>
-
 <?php
 	if(isset($_GET['action'])  && $_GET['action'] == 'err'){ 
 	$date = date("Y-m-d");
@@ -876,7 +912,7 @@ function fee(str) {
 			echo '<div class = "row">';
 			echo '<div class = "col-xs-1">' . $row['ornum'] . '</div>';
 			echo '<div class = "col-xs-3">' . strtoupper($row['fname']) . ' ' . strtoupper($row['lname']) . '</div>';
-			echo '<div class = "col-xs-1">₱ ' . number_format($row['amount']) . '</div>';
+			echo '<div class = "col-xs-1">₱ ' . $row['amount'] . '</div>';
 			echo '<div class = "col-xs-2">' . strtoupper($month) . '</div>';
 			echo '<div class="col-xs-1">₱ 10,000</div><div class="col-xs-1">₱ 10,000</div><div class="col-xs-1">₱ 10,000</div>';
 			echo '<div class="col-xs-1">₱ 10,000</div><div class="col-xs-1">₱ 10,000</div>';
