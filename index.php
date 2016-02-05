@@ -24,7 +24,9 @@
 	            	<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="icon-coin-dollar"></span> Collections <b class="caret"></b></a>
 	            	<ul class="dropdown-menu" role="menu">
 	            		<li><a role = "button" href = "?module=collection"><span class="icon-plus"></span> New Collection </a></li>
+	            		<li><a role = "button" href = "?module=cashticket"><span class="icon-ticket"></span> Cash Ticket </a></li>
 	            		<li><a role = "button" href = "?module=collection&action=daily"><span class="icon-file-text2"></span> Daily Collection </a></li>
+	            		<li><a role = "button" href = "?module=collection&action=edit"><span class = "icon-quill"></span> Edit O.R. </a></li>
 	            	</ul>
 	            </li>
 	            <li class="dropdown">
@@ -70,6 +72,7 @@
     <!-- Page Content -->
     <div class = "container-fluid" style="margin-top: 60px; display: hidden;">
       <?php
+      	include 'ajax/func.php';
       	if(!isset($_GET['module'])){
           include 'modules/main.php';
       	}elseif(!file_exists('modules/'.$_GET['module'].'.php')){

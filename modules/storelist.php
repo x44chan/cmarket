@@ -1,5 +1,5 @@
 ﻿<?php
-	$sql = "SELECT * FROM `store`,`owner` where store.owner_id = owner.owner_id";
+	$sql = "SELECT * FROM `store`,`owner` where store.owner_id = owner.owner_id ORDER BY lname ASC";
 	$result = $conn->query($sql);		
 	if($result->num_rows > 0){
 		echo '<div class = "container-fluid" style = "text-align: center; margin: 10px 20px">

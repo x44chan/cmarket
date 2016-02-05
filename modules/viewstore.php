@@ -126,7 +126,7 @@
 		
 		<div class="row">
 			<div class="col-xs-12" align="center">
-				<?php if($data['status'] > 0) { ?><button class="btn btn-primary btn-sm" type = "submit" name = "upsub"><span class = "icon-checkmark"></span> Update Record </button> <a href = "?module=storedel&x=<?php echo $data['store_id']; ?>" class="btn btn-danger btn-sm" onClick="return confirm('Confirm Action');" ><span class="icon-cross"></span> Close Store </a> <?php } ?> &nbsp;<a href = "?module=storelist" class="btn btn-warning btn-sm"><span class = " icon-exit"></span> Back to List </a>
+				<?php if($data['status'] == 0) { ?><button class="btn btn-primary btn-sm" type = "submit" name = "upsub"><span class = "icon-checkmark"></span> Update Record </button> <a href = "?module=storedel&x=<?php echo $data['store_id']; ?>" class="btn btn-danger btn-sm" onClick="return confirm('Confirm Action');" ><span class="icon-cross"></span> Close Store </a> <?php } ?> &nbsp;<a href = "?module=storelist" class="btn btn-warning btn-sm"><span class = " icon-exit"></span> Back to List </a>
 			</div>
 		</div>
 	</form>

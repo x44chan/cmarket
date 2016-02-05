@@ -57,30 +57,20 @@ while($orfroms < $ortos) {
 				else{
 					$dmonthly=number_format($row['area'] * $row['multi'] * 30+100, 2);
 				}
-				
 				$dmonthly = str_replace(",","",$dmonthly);
-				$x=number_format($dmonthly/30, 2);
-				$x = str_replace(",","",$x);
-				$y=number_format($x*7, 2);
-				
-				echo '
-				
-				
-				
-				
-				
-				<div class="col-xs-2">
-					<label>Daily Fee</label>
-					<input type = "text" readonly class = "form-control input-sm" value = "'.$x .'"/>
-				</div>
-				<div class="col-xs-2">
-					<label>Weekly Fee</label>
-					<input type = "text" readonly class = "form-control input-sm" value = "'. $y .'"/>
-				</div>				
-				<div class="col-xs-2">
-					<label>Monthly Fee</label>
-					<input type = "text" readonly class = "form-control input-sm" value = "'.$dmonthly .'"/>
-				</div>';					  
+				echo '				
+					<div class="col-xs-2">
+						<label>Daily Fee</label>
+						<input type = "text" readonly class = "form-control input-sm" value = "'. number_format($dmonthly/30, 2) .'"/>
+					</div>
+					<div class="col-xs-2">
+						<label>Weekly Fee</label>
+						<input type = "text" readonly class = "form-control input-sm" value = "'. number_format(($dmonthly/30) * 7, 2) .'"/>
+					</div>				
+					<div class="col-xs-2">
+						<label>Monthly Fee</label>
+						<input type = "text" readonly class = "form-control input-sm" value = "'.$dmonthly .'"/>
+					</div>';					  
 			}
 		}
 		$conn->close();
