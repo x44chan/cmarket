@@ -159,14 +159,18 @@
 		    $("#dlyto").attr('required',false);
 		    $("#dlyto").attr("name", "asd");
 		    $("#wklymonto").val(date);
-		    $("#wklymonfr").val(date);       
+		    $("#wklymonfr").val(date);
+		    $("#wklymonto").attr("name","mfeedateto");
+		    $("#wklymonfr").attr("name","mfeedatefr");       
 		    $("#wklymonto").attr('required',true);
 		    $("#wklymonfr").attr('required',true);
 		  }else{
 		    $("#dly").show();
 		    $("#drange").hide();
 		    $("#dlyto").attr('required',true);
-		    $("#dlyto").attr("name", "datefr");
+		    $("#dlyto").attr("name", "mfeedatefr");
+		    $("#wklymonto").attr("name","false");
+		    $("#wklymonfr").attr("name","false");
 		    $("#dlyto").val(date);
 		    $("#wklymonfr").attr('required',false);
 		    $("#wklymonto").attr('required',false);
@@ -216,7 +220,7 @@
 						$result = $conn->query($stmt);		
 						if($result->num_rows > 0){
 							while($row = $result->fetch_assoc()){								
-								echo '<option value ="' . $row['invoiceno'] . '">' . $row['invoiceno'] . '</option>';
+								echo '<option value ="' . $row['issuanceid'] . '">' . $row['invoiceno'] . '</option>';
 							}
 						}
 					?>					
@@ -336,17 +340,17 @@
 				<div id = "drange" <?php if(isset($dataor['datefr']) && $dataor['datefr'] == $dataor['dateto']){ echo 'style="display: none;"';}elseif(isset($dataor['datefr']) && $dataor['datefr'] != $dataor['dateto']){}else{echo ' style = "display: none;" ';}?>>
 					<div class="col-xs-3">
 						<label>Date of Payment From: <font color="red">*</font></label>
-						<input type="date" name = "mfeedatefr" id = "wklymonfr" class="form-control input-sm" <?php if(isset($dataor['datefr']) && $dataor['datefr'] != $dataor['dateto']){ echo 'value = "'. $dataor['datefr'] .'"';}?>/>
+						<input type="date" id = "wklymonfr" class="form-control input-sm" <?php if(isset($dataor['datefr']) && $dataor['datefr'] != $dataor['dateto']){ echo 'value = "'. $dataor['datefr'] .'" name = "mfeedatefr"';}?>/>
 					</div>
 					<div class="col-xs-3">
 						<label>Date of Payment To:  <font color="red">*</font></label>
-						<input type="date" name = "mfeedateto" id = "wklymonto" class="form-control input-sm" <?php if(isset($dataor['datefr']) && $dataor['datefr'] != $dataor['dateto']){ echo 'value = "'. $dataor['dateto'] .'"';}?>/>
+						<input type="date" id = "wklymonto" class="form-control input-sm" <?php if(isset($dataor['datefr']) && $dataor['datefr'] != $dataor['dateto']){ echo 'value = "'. $dataor['dateto'] .'" name = "mfeedateto"';}?>/>
 					</div>
 				</div>
 				<div id = "dly" <?php if(isset($dataor['datefr']) && $dataor['datefr'] != $dataor['dateto']){ echo 'style="display: none;"';}elseif(isset($dataor['datefr']) && $dataor['datefr'] == $dataor['dateto']){}?>>
 					<div class="col-xs-6">
 						<label>Date of Payment:  <font color="red">*</font></label>
-						<input type="date" name = "mfeedatefr" id = "dlyto" class="form-control input-sm" <?php if(isset($dataor['datefr'])){ echo 'value = "'. $dataor['datefr'] .'"';}else{ echo 'value = "'.date("Y-m-d").'"';}?> />
+						<input type="date" id = "dlyto" class="form-control input-sm" <?php if(isset($dataor['datefr']) && $dataor['datefr'] == $dataor['dateto']){ echo 'value = "'. $dataor['datefr'] .'" name = "mfeedatefr"';}elseif(!isset($dataor['datefr'])){ echo 'value = "'.date("Y-m-d").'" name = "mfeedatefr"';}?> />
 					</div>
 				</div>
 			</div>
@@ -592,12 +596,21 @@
 <?php
 	$count = 0;
 	if(isset($_POST['collsub'])){
+		if(!empty($_POST['invoicenum'])){
+			$_POST['invoicenum'] = mysqli_real_escape_string($conn, $_POST['invoicenum']);
+			$invoice = "SELECT * FROM orissuance where issuanceid = '$_POST[invoicenum]'";
+			$datai = $conn->query($invoice)->fetch_assoc();
+			$_POST['invoicenum'] = $datai['invoiceno'];
+		}
 		if(isset($_POST['mfeeamount']) && !empty($_POST['mfeeamount'])){
 			$type = "Market Fee";
 			if(isset($_POST['chcknum']) && !empty($_POST['chcknum'])){
 				$_POST['chcknum'] = $_POST['chcknum'];
 			}else{
 				$_POST['chcknum'] = null;
+			}
+			if(empty($_POST['mfeedateto'])){
+				$_POST['mfeedateto'] = $_POST['mfeedatefr'];
 			}
 			$stmt = $conn->prepare("INSERT INTO collection (paydate, invoice, store_id, owner_id, ornum, amount, datefr, dateto, type, checknum) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 			$stmt->bind_param("ssiiidssss", $_POST['datecollect'], $_POST['invoicenum'], $_POST['strename'], $_POST['streown'], $_POST['ornum'], $_POST['mfeeamount'], $_POST['mfeedatefr'], $_POST['mfeedateto'], $type, $_POST['chcknum']);	
@@ -708,8 +721,11 @@
 			}else{
 				$_POST['chcknum'] = null;
 			}
+			if(empty($_POST['mfeedateto'])){
+				$_POST['mfeedateto'] = $_POST['mfeedatefr'];
+			}
 			$stmt = $conn->prepare("UPDATE `collection` set paydate = ?, invoice = ?, store_id = ?, owner_id = ?, ornum = ?, amount = ?, datefr = ?, dateto = ?, checknum = ?, type = ?, editreason = ?, editdate = ? where type = ? and ornum = ?");
-			$stmt->bind_param("ssiiidsssssiss", $_POST['datecollect'], $_POST['invoicenum'], $_POST['strename'], $_POST['streown'], $_POST['ornum'], $_POST['mfeeamount'], $_POST['mfeedatefr'], $_POST['mfeedateto'], $_POST['chcknum'], $type,$_POST['edreason'], $editdate, $type, $_GET['or']);	
+			$stmt->bind_param("ssiiidsssssssi", $_POST['datecollect'], $_POST['invoicenum'], $_POST['strename'], $_POST['streown'], $_POST['ornum'], $_POST['mfeeamount'], $_POST['mfeedatefr'], $_POST['mfeedateto'], $_POST['chcknum'], $type, $_POST['edreason'], date("Y-m-d h:i A"), $type, $_GET['or']);	
 			if($stmt->execute()){
 				$count += 1;
 			}
@@ -717,7 +733,7 @@
 		if(isset($_POST['ebillamount']) && !empty($_POST['ebillamount'])){
 			$type = "Electric Bill";
 			$stmt = $conn->prepare("UPDATE `collection` set paydate = ?, invoice = ?, store_id = ?, owner_id = ?, ornum = ?, amount = ?, datefr = ?, dateto = ?, type = ?, editreason = ?, editdate = ? where type = ? and ornum = ?");
-			$stmt->bind_param("ssiiidssssiss", $_POST['datecollect'], $_POST['invoicenum'], $_POST['strename'], $_POST['streown'], $_POST['ornum'], $_POST['ebillamount'], $_POST['ebilldatefr'], $_POST['ebilldateto'], $type,$_POST['edreason'], $editdate, $type, $_GET['or']);	
+			$stmt->bind_param("ssiiidssssssi", $_POST['datecollect'], $_POST['invoicenum'], $_POST['strename'], $_POST['streown'], $_POST['ornum'], $_POST['ebillamount'], $_POST['ebilldatefr'], $_POST['ebilldateto'], $type,$_POST['edreason'], date("Y-m-d h:i A"), $type, $_GET['or']);	
 			if($stmt->execute()){
 				$count += 1;
 			}
@@ -725,7 +741,7 @@
 		if(isset($_POST['wbillamount']) && !empty($_POST['wbillamount'])){
 			$type = "Water Bill";
 			$stmt = $conn->prepare("UPDATE collection set paydate = ?, invoice = ?, store_id = ?, owner_id = ?, ornum = ?, amount = ?, datefr = ?, dateto = ?, type = ?, editreason = ?, editdate = ? where type = ? and ornum = ?");
-			$stmt->bind_param("ssiiidssssiss", $_POST['datecollect'], $_POST['invoicenum'], $_POST['strename'], $_POST['streown'], $_POST['ornum'], $_POST['wbillamount'], $_POST['wbilldatefr'], $_POST['wbilldateto'], $type,$_POST['edreason'], $editdate, $type, $_GET['or']);	
+			$stmt->bind_param("ssiiidssssssi", $_POST['datecollect'], $_POST['invoicenum'], $_POST['strename'], $_POST['streown'], $_POST['ornum'], $_POST['wbillamount'], $_POST['wbilldatefr'], $_POST['wbilldateto'], $type,$_POST['edreason'], date("Y-m-d h:i A"), $type, $_GET['or']);	
 			if($stmt->execute()){
 				$count += 1;
 			}
@@ -733,7 +749,7 @@
 		if(isset($_POST['mcamount']) && !empty($_POST['mcamount'])){
 			$type = "Market Clearance";
 			$stmt = $conn->prepare("UPDATE collection set paydate = ?, invoice = ?, store_id = ?, owner_id = ?, ornum = ?, amount = ?, type = ?, editreason = ?, editdate = ? where type = ? and ornum = ?");
-			$stmt->bind_param("ssiiidssiss", $_POST['datecollect'], $_POST['invoicenum'], $_POST['strename'], $_POST['streown'], $_POST['ornum'], $_POST['mcamount'], $type, $_POST['edreason'], $editdate, $type, $_GET['or']);	
+			$stmt->bind_param("ssiiidssssi", $_POST['datecollect'], $_POST['invoicenum'], $_POST['strename'], $_POST['streown'], $_POST['ornum'], $_POST['mcamount'], $type, $_POST['edreason'], date("Y-m-d h:i A"), $type, $_GET['or']);	
 			if($stmt->execute()){
 				$count += 1;
 			}
@@ -741,7 +757,7 @@
 		if(isset($_POST['btamount']) && !empty($_POST['btamount'])){
 			$type = "Business Tax";
 			$stmt = $conn->prepare("UPDATE collection set paydate = ?, invoice = ?, store_id = ?, owner_id = ?, ornum = ?, amount = ?, type = ?, editreason = ?, editdate = ? where type = ? and ornum = ?");
-			$stmt->bind_param("ssiiidssiss", $_POST['datecollect'], $_POST['invoicenum'], $_POST['strename'], $_POST['streown'], $_POST['ornum'], $_POST['btamount'], $type, $_POST['edreason'], $editdate, $type, $_GET['or']);	
+			$stmt->bind_param("ssiiidssssi", $_POST['datecollect'], $_POST['invoicenum'], $_POST['strename'], $_POST['streown'], $_POST['ornum'], $_POST['btamount'], $type, $_POST['edreason'], date("Y-m-d h:i A"), $type, $_GET['or']);	
 			if($stmt->execute()){
 				$count += 1;
 			}
@@ -749,7 +765,7 @@
 		if(isset($_POST['sramount']) && !empty($_POST['sramount'])){
 			$type = "Space Rental";
 			$stmt = $conn->prepare("UPDATE collection set paydate = ?, invoice = ?, store_id = ?, owner_id = ?, ornum = ?, amount = ?, type = ?, editreason = ?, editdate = ? where type = ? and ornum = ?");
-			$stmt->bind_param("ssiiidssiss", $_POST['datecollect'], $_POST['invoicenum'], $_POST['strename'], $_POST['streown'], $_POST['ornum'], $_POST['sramount'], $type, $_POST['edreason'], $editdate, $type, $_GET['or']);	
+			$stmt->bind_param("ssiiidssssi", $_POST['datecollect'], $_POST['invoicenum'], $_POST['strename'], $_POST['streown'], $_POST['ornum'], $_POST['sramount'], $type, $_POST['edreason'], date("Y-m-d h:i A"), $type, $_GET['or']);	
 			if($stmt->execute()){
 				$count += 1;
 			}
@@ -757,7 +773,7 @@
 		if(isset($_POST['amamount']) && !empty($_POST['amamount'])){
 			$type = "Anti Mortem";
 			$stmt = $conn->prepare("UPDATE collection set paydate = ?, invoice = ?, store_id = ?, owner_id = ?, ornum = ?, amount = ?, type = ?, editreason = ?, editdate = ? where type = ? and ornum = ?");
-			$stmt->bind_param("ssiiidssiss", $_POST['datecollect'], $_POST['invoicenum'], $_POST['strename'], $_POST['streown'], $_POST['ornum'], $_POST['amamount'], $type, $_POST['edreason'], $editdate, $type, $_GET['or']);	
+			$stmt->bind_param("ssiiidssssi", $_POST['datecollect'], $_POST['invoicenum'], $_POST['strename'], $_POST['streown'], $_POST['ornum'], $_POST['amamount'], $type, $_POST['edreason'], date("Y-m-d h:i A"), $type, $_GET['or']);	
 			if($stmt->execute()){
 				$count += 1;
 			}
@@ -765,7 +781,7 @@
 		if(isset($_POST['pmamount']) && !empty($_POST['pmamount'])){
 			$type = "Post Mortem";
 			$stmt = $conn->prepare("UPDATE collection set paydate = ?, invoice = ?, store_id = ?, owner_id = ?, ornum = ?, amount = ?, type = ?, editreason = ?, editdate = ? where type = ? and ornum = ?");
-			$stmt->bind_param("ssiiidssiss", $_POST['datecollect'], $_POST['invoicenum'], $_POST['strename'], $_POST['streown'], $_POST['ornum'], $_POST['pmamount'], $type, $_POST['edreason'], $editdate, $type, $_GET['or']);	
+			$stmt->bind_param("ssiiidssssi", $_POST['datecollect'], $_POST['invoicenum'], $_POST['strename'], $_POST['streown'], $_POST['ornum'], $_POST['pmamount'], $type, $_POST['edreason'], date("Y-m-d h:i A"), $type, $_GET['or']);	
 			if($stmt->execute()){
 				$count += 1;
 			}
@@ -773,7 +789,7 @@
 		if(isset($_POST['tfamount']) && !empty($_POST['tfamount'])){
 			$type = "Transfer Fee";
 			$stmt = $conn->prepare("UPDATE collection set paydate = ?, invoice = ?, store_id = ?, owner_id = ?, ornum = ?, amount = ?, type = ?, editreason = ?, editdate = ? where type = ? and ornum = ?");
-			$stmt->bind_param("ssiiidssiss", $_POST['datecollect'], $_POST['invoicenum'], $_POST['strename'], $_POST['streown'], $_POST['ornum'], $_POST['tfamount'], $type,$_POST['edreason'], $editdate, $type, $_GET['or']);	
+			$stmt->bind_param("ssiiidssssi", $_POST['datecollect'], $_POST['invoicenum'], $_POST['strename'], $_POST['streown'], $_POST['ornum'], $_POST['tfamount'], $type,$_POST['edreason'], date("Y-m-d h:i A"), $type, $_GET['or']);	
 			if($stmt->execute()){
 				$count += 1;
 			}
@@ -781,7 +797,7 @@
 		if(isset($_POST['rfamount']) && !empty($_POST['rfamount'])){
 			$type = "Renewal Fee";
 			$stmt = $conn->prepare("UPDATE collection set paydate = ?, invoice = ?, store_id = ?, owner_id = ?, ornum = ?, amount = ?, type = ?, editreason = ?, editdate = ? where type = ? and ornum = ?");
-			$stmt->bind_param("ssiiidssiss", $_POST['datecollect'], $_POST['invoicenum'], $_POST['strename'], $_POST['streown'], $_POST['ornum'], $_POST['rfamount'], $type, $_POST['edreason'], $editdate, $type, $_GET['or']);	
+			$stmt->bind_param("ssiiidssssi", $_POST['datecollect'], $_POST['invoicenum'], $_POST['strename'], $_POST['streown'], $_POST['ornum'], $_POST['rfamount'], $type, $_POST['edreason'], date("Y-m-d h:i A"), $type, $_GET['or']);	
 			if($stmt->execute()){
 				$count += 1;
 			}
@@ -789,7 +805,7 @@
 		if(isset($_POST['gamount']) && !empty($_POST['gamount'])){
 			$type = "Goodwill";
 			$stmt = $conn->prepare("UPDATE collection set paydate = ?, invoice = ?, store_id = ?, owner_id = ?, ornum = ?, amount = ?, type = ?, editreason = ?, editdate = ? where type = ? and ornum = ?");
-			$stmt->bind_param("ssiiidssiss", $_POST['datecollect'], $_POST['invoicenum'], $_POST['strename'], $_POST['streown'], $_POST['ornum'], $_POST['gamount'], $type, $_POST['edreason'], $editdate, $type, $_GET['or']);	
+			$stmt->bind_param("ssiiidssssi", $_POST['datecollect'], $_POST['invoicenum'], $_POST['strename'], $_POST['streown'], $_POST['ornum'], $_POST['gamount'], $type, $_POST['edreason'], date("Y-m-d h:i A"), $type, $_GET['or']);	
 			if($stmt->execute()){
 				$count += 1;
 			}
@@ -797,7 +813,7 @@
 		if(isset($_POST['tctamount']) && !empty($_POST['tctamount'])){
 			$type = "TCT";
 			$stmt = $conn->prepare("UPDATE collection set paydate = ?, invoice = ?, store_id = ?, owner_id = ?, ornum = ?, amount = ?, type = ?, editreason = ?, editdate = ? where type = ? and ornum = ?");
-			$stmt->bind_param("ssiiidssiss", $_POST['datecollect'], $_POST['invoicenum'], $_POST['strename'], $_POST['streown'], $_POST['ornum'], $_POST['tctamount'], $type,$_POST['edreason'], $editdate, $type, $_GET['or']);	
+			$stmt->bind_param("ssiiidssssi", $_POST['datecollect'], $_POST['invoicenum'], $_POST['strename'], $_POST['streown'], $_POST['ornum'], $_POST['tctamount'], $type,$_POST['edreason'], date("Y-m-d h:i A"), $type, $_GET['or']);	
 			if($stmt->execute()){
 				$count += 1;
 			}
@@ -980,54 +996,44 @@
 					if($row2['type'] == "Electric Bill"){
 						$ebill = '₱ ' . number_format($row2['amount']);
 						$ecov = strtoupper($month);
-						$mfeetotal += $row2['amount'];
 						$ebilltotal += $row['amount'];
 					}
 					if($row2['type'] == "Water Bill"){
 						$wbill = '₱ ' . number_format($row2['amount']);
 						$wcov = strtoupper($month);
-						$mfeetotal += $row2['amount'];
 						$wbilltotal += $row2['amount'];
 					}
 					if($row2['type'] == "Market Clearance"){
 						$mc = '₱ ' . number_format($row2['amount']);
-						$mfeetotal += $row2['amount'];
 						$mctotal += $row['amount'];
 					}
 					if($row2['type'] == "Business Tax" || $row2['type'] == "Space Rental"){
 						$btsr2 += $row2['amount'];
 						$btsr = '₱ ' . number_format($btsr2);
-						$mfeetotal += $row2['amount'];
 						$btsrtotal += $row2['amount'];
 					}
 					if($row2['type'] == "Anti Mortem"){
 						$am = '₱ ' . number_format($row2['amount']);
-						$mfeetotal += $row2['amount'];
 						$amtotal += $row2['amount'];
 					}
 					if($row2['type'] == "Post Mortem"){
 						$pm = '₱ ' . number_format($row2['amount']);
-						$mfeetotal += $row2['amount'];
 						$pmtotal += $row2['amount'];
 					}
 					if($row2['type'] == "Transfer Fee"){
 						$tf = '₱ ' . number_format($row2['amount']);
-						$mfeetotal += $row2['amount'];
 						$tftotal += $row2['amount'];
 					}
 					if($row2['type'] == "Renewal Fee"){
 						$rf = '₱ ' . number_format($row2['amount']);
-						$mfeetotal += $row2['amount'];
 						$rftotal += $row2['amount'];
 					}
 					if($row2['type'] == "Goodwill"){
 						$g = '₱ ' . number_format($row2['amount']);
-						$mfeetotal += $row2['amount'];
 						$gtotal += $row['amount'];
 					}
 					if($row2['type'] == "TCT"){
 						$tct = '₱ ' . number_format($row2['amount']);
-						$mfeetotal += $row2['amount'];
 						$tctotal += $row2['amount'];
 					}
 
@@ -1070,6 +1076,7 @@
 			<td>₱'.number_format($gtotal,2).'</td>
 			<td>₱'.number_format($tctotal,2).'</td>
 		</tr>';
+		$total = $mfeetotal + $ebilltotal + $wbilltotal + $mctotal + $btsrtotal + $amtotal + $pmtotal + $tftotal + $rftotal + $gtotal + $tctotal;
 	$cashticket = "SELECT * FROM collection,user where user.account_id = collection.collector_id and type = 'Cash Ticket' $xquery ORDER BY lname";
 	$restct = $conn->query($cashticket);
 	$cttotal = 0;
@@ -1087,7 +1094,7 @@
 		echo '<tr><td colspan = 7></td><td><br><b>Total:</td><td colspan = 4><hr>₱ '.number_format($cttotal,2).'</tr>';
 	}
 	echo '<tr><td colspan = 16><hr></td><tr>';
-	echo '<tr><td colspan = "8"><b>Total Collection: </b></td><td colspan = 4>₱ ' . number_format($mfeetotal+$cttotal,2) . '</td></tr>';
+	echo '<tr><td colspan = "8"><b>Total Collection: </b></td><td colspan = 4>₱ ' . number_format($total+$cttotal,2) . '</td></tr>';
 ?>	
 	</tbody>
 	</table>

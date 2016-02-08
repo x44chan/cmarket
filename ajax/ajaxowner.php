@@ -19,7 +19,7 @@ if(isset($_GET['q'])){
 if(isset($_GET['x'])){
 	$q = intval($_GET['x']);
 	include '../config/conf.php';
-	$sql = "SELECT * FROM `orissuance` where invoiceno = '$q' ";
+	$sql = "SELECT * FROM `orissuance` where issuanceid = '$q' ";
 	$result = $conn->query($sql);		
 	if($result->num_rows > 0){
 		echo '<option value="">-------</option>';
