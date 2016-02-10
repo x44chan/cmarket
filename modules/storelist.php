@@ -58,8 +58,7 @@
 						'. $row['lname'] . ', ' . $row['fname'] . ' ' . $row['mname'] .'
 					</div>
 					<div class = "col-xs-2">
-					<a role = "button" href = "?module=viewstore&x='.$row['store_id'].'">'.$row['sname'].'</a></li>
-						
+						<a role = "button" href = "?module=viewstore&x='.$row['store_id'].'" data-toggle = "tooltip" title = "View Details">'.$row['sname'].'</a></li>
 					</div>
 					<div class = "col-xs-2">
 						'. $row['classification'] .'

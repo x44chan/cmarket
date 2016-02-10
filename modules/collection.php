@@ -59,6 +59,9 @@
 				return false;
 			}
 		});
+		$("#numofdays").change(function(){
+			$("input[name='mfeeamount']").val($("#numofdays").val() * $("#dailyfee").val());
+		});
 		<?php if(isset($dataor['store_id'])){ ?>
 		$("#ownerfee").ready(function(){
 		    fee(<?php echo $dataor['store_id'];?>);
@@ -353,6 +356,10 @@
 						<input type="date" id = "dlyto" class="form-control input-sm" <?php if(isset($dataor['datefr']) && $dataor['datefr'] == $dataor['dateto']){ echo 'value = "'. $dataor['datefr'] .'" name = "mfeedatefr"';}elseif(!isset($dataor['datefr'])){ echo 'value = "'.date("Y-m-d").'" name = "mfeedatefr"';}?> />
 					</div>
 				</div>
+				<div class="col-xs-5">
+					<label>Number of Days: <font color="red">*</font></label>
+					<input type="text" class="form-control input-sm" id = "numofdays" placeholder = "Enter Number of Days"/>
+				</div>
 			</div>
 			<div class="row">
 				<div class="col-xs-6" align="left">
@@ -376,12 +383,12 @@
 				</div>
 				<div class="col-xs-5" id = "cash" <?php if(isset($dataor['checknum']) && $dataor['checknum'] != null){ echo ' style = "display: none;" ';}?>>
 					<label>Amount: <font color="red">*</font></label>
-					<input id = "mfeeamount" type="text" class="form-control input-sm" <?php if(!isset($dataor['checknum']) && isset($_GET['or']) && $edmfee > 0){ echo ' value = "' . $edmfee . '" name = "mfeeamount" ';}elseif(!isset($_GET['or'])){echo ' name = "mfeeamount" ';}?> placeholder = "Enter Amount Paid"/>
+					<input id = "mfeeamount" autocomplete = "off" type="text" class="form-control input-sm" <?php if(!isset($dataor['checknum']) && isset($_GET['or']) && $edmfee > 0){ echo ' value = "' . $edmfee . '" name = "mfeeamount" ';}elseif(!isset($_GET['or'])){echo ' name = "mfeeamount" ';}?> placeholder = "Enter Amount Paid"/>
 				</div>				
 				<div id = "chck" <?php if(isset($dataor['checknum']) && $dataor['checknum'] != null){}else{ echo ' style = "display: none;"';}?>>
 					<div class="col-xs-3">
 						<label>Amount: <font color="red">*</font></label>
-						<input id = "chckamount" type="text" <?php if(isset($dataor['checknum']) && $dataor['checknum'] != null && $edmfee > 0){ echo ' value = "' . $edmfee . '" name = "mfeeamount"';}?> class="form-control input-sm" placeholder = "Enter Amount Paid"/>
+						<input id = "chckamount" autocomplete = "off" type="text" <?php if(isset($dataor['checknum']) && $dataor['checknum'] != null && $edmfee > 0){ echo ' value = "' . $edmfee . '" name = "mfeeamount"';}?> class="form-control input-sm" placeholder = "Enter Amount Paid"/>
 					</div>
 					<div class="col-xs-3">
 						<label>Check #: <font color="red">*</font></label>
@@ -413,7 +420,7 @@
 				</div>
 				<div class="col-xs-5">
 					<label>Amount: <font color="red">*</font></label>
-					<input name="ebillamount" type="text" class="form-control input-sm" placeholder = "Enter Amount" <?php if(isset($dataor['amount']) && $edbill > 0){ echo ' value = "' . $edbill . '" '; } ?> />
+					<input name="ebillamount" autocomplete = "off" type="text" class="form-control input-sm" placeholder = "Enter Amount" <?php if(isset($dataor['amount']) && $edbill > 0){ echo ' value = "' . $edbill . '" '; } ?> />
 				</div>
 			</div>
 		</div>
@@ -435,7 +442,7 @@
 				</div>
 				<div class="col-xs-5">
 					<label>Amount: <font color="red">*</font></label>
-					<input <?php if(isset($dataor['type']) && $dataor['type'] == 'Water Bill' && $edwbill > 0 ){ echo ' value = "'.$edwbill.'" '; }?> name="wbillamount" type="text" class="form-control input-sm" placeholder = "Enter Amount"/>
+					<input <?php if(isset($dataor['type']) && $dataor['type'] == 'Water Bill' && $edwbill > 0 ){ echo ' value = "'.$edwbill.'" '; }?> autocomplete = "off" name="wbillamount" type="text" class="form-control input-sm" placeholder = "Enter Amount"/>
 				</div>
 			</div>
 		</div>
@@ -449,7 +456,7 @@
 			<div class="row">
 				<div class="col-xs-5">
 					<label>Amount: <font color="red">*</font></label>
-					<input <?php if(isset($tymclear) && $tymclear == 1 && $edmclear > 0 ){ echo ' value = "'.$edmclear.'" '; }?> name="mcamount" type="text" class="form-control input-sm" placeholder = "Enter Amount"/>
+					<input <?php if(isset($tymclear) && $tymclear == 1 && $edmclear > 0 ){ echo ' value = "'.$edmclear.'" '; }?> autocomplete = "off" name="mcamount" type="text" class="form-control input-sm" placeholder = "Enter Amount"/>
 				</div>
 			</div>
 		</div>
@@ -463,7 +470,7 @@
 			<div class="row">
 				<div class="col-xs-5">
 					<label>Amount: <font color="red">*</font></label>
-					<input <?php if(isset($typbtax) && $edbtax > 0){ echo ' value = "'.$edbtax.'" '; }?> name="btamount" type="text" class="form-control input-sm" placeholder = "Enter Amount"/>
+					<input <?php if(isset($typbtax) && $edbtax > 0){ echo ' value = "'.$edbtax.'" '; }?> autocomplete = "off" name="btamount" type="text" class="form-control input-sm" placeholder = "Enter Amount"/>
 				</div>
 			</div>
 		</div>
@@ -477,7 +484,7 @@
 			<div class="row">
 				<div class="col-xs-5">
 					<label>Amount: <font color="red">*</font></label>
-					<input <?php if(isset($tysrental) && $edsrental > 0){ echo ' value = "'.$edsrental.'" '; }?>name="sramount" type="text" class="form-control input-sm" placeholder = "Enter Amount"/>
+					<input <?php if(isset($tysrental) && $edsrental > 0){ echo ' value = "'.$edsrental.'" '; }?> autocomplete = "off" name="sramount" type="text" class="form-control input-sm" placeholder = "Enter Amount"/>
 				</div>
 			</div>
 		</div>
@@ -491,7 +498,7 @@
 			<div class="row">
 				<div class="col-xs-5">
 					<label>Amount: <font color="red">*</font></label>
-					<input <?php if(isset($typamortem) && $edamortem > 0){ echo ' value = "'.$edamortem.'" '; }?>name="amamount" type="text" class="form-control input-sm" placeholder = "Enter Amount"/>
+					<input <?php if(isset($typamortem) && $edamortem > 0){ echo ' value = "'.$edamortem.'" '; }?> autocomplete = "off" name="amamount" type="text" class="form-control input-sm" placeholder = "Enter Amount"/>
 				</div>
 			</div>
 		</div>
@@ -505,7 +512,7 @@
 			<div class="row">
 				<div class="col-xs-5">
 					<label>Amount: <font color="red">*</font></label>
-					<input <?php if(isset($typmorem) && $edpmortem > 0){ echo ' value = "'.$edpmortem.'" '; }?>name="pmamount" type="text" class="form-control input-sm" placeholder = "Enter Amount"/>
+					<input <?php if(isset($typmorem) && $edpmortem > 0){ echo ' value = "'.$edpmortem.'" '; }?> autocomplete = "off" name="pmamount" type="text" class="form-control input-sm" placeholder = "Enter Amount"/>
 				</div>
 			</div>
 		</div>
@@ -519,7 +526,7 @@
 			<div class="row">
 				<div class="col-xs-5">
 					<label>Amount: <font color="red">*</font></label>
-					<input <?php if(isset($typtfee) && $edtfee > 0){ echo ' value = "'.$edtfee.'" '; }?>name="tfamount" type="text" class="form-control input-sm" placeholder = "Enter Amount"/>
+					<input <?php if(isset($typtfee) && $edtfee > 0){ echo ' value = "'.$edtfee.'" '; }?>autocomplete = "off" name="tfamount" type="text" class="form-control input-sm" placeholder = "Enter Amount"/>
 				</div>
 			</div>
 		</div>
@@ -533,7 +540,7 @@
 			<div class="row">
 				<div class="col-xs-5">
 					<label>Amount: <font color="red">*</font></label>
-					<input <?php if(isset($typrfee) && $edrfee > 0){ echo ' value = "'. $edrfee .'" '; }?> name="rfamount" type="text" class="form-control input-sm" placeholder = "Enter Amount"/>
+					<input <?php if(isset($typrfee) && $edrfee > 0){ echo ' value = "'. $edrfee .'" '; }?> autocomplete = "off" name="rfamount" type="text" class="form-control input-sm" placeholder = "Enter Amount"/>
 				</div>
 			</div>
 		</div>
@@ -547,7 +554,7 @@
 			<div class="row">
 				<div class="col-xs-5">
 					<label>Amount: <font color="red">*</font></label>
-					<input <?php if(isset($typgwill) && $edgwill > 0){ echo ' value = "'.$edgwill.'" '; }?>name="gamount" type="text" class="form-control input-sm" placeholder = "Enter Amount"/>
+					<input <?php if(isset($typgwill) && $edgwill > 0){ echo ' value = "'.$edgwill.'" '; }?>autocomplete = "off" name="gamount" type="text" class="form-control input-sm" placeholder = "Enter Amount"/>
 				</div>
 			</div>
 		</div>
@@ -561,7 +568,7 @@
 			<div class="row">
 				<div class="col-xs-5">
 					<label>Amount: <font color="red">*</font></label>
-					<input <?php if(isset($typtct) && $edtct > 0){ echo ' value = "'.$edtct.'" '; }?> name="tctamount" type="text" class="form-control input-sm" placeholder = "Enter Amount"/>
+					<input <?php if(isset($typtct) && $edtct > 0){ echo ' value = "'.$edtct.'" '; }?> autocomplete = "off" name="tctamount" type="text" class="form-control input-sm" placeholder = "Enter Amount"/>
 				</div>
 			</div>
 		</div>

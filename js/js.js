@@ -10,7 +10,8 @@ $(document).ready( function () {
     "iDisplayLength": 15,
     "sorting": false
   });
-    //$(".jumbotron").hide().fadeIn();
+  //$(".jumbotron").hide().fadeIn();
+  $('[data-toggle="tooltip"]').tooltip(); 
 });
 
 $(window).load(function(){

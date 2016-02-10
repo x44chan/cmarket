@@ -61,7 +61,7 @@ while($orfroms < $ortos) {
 				echo '				
 					<div class="col-xs-2">
 						<label>Daily Fee</label>
-						<input type = "text" readonly class = "form-control input-sm" value = "'. number_format($dmonthly/30, 2) .'"/>
+						<input type = "text" readonly id = "dailyfee" class = "form-control input-sm" value = "'. number_format($dmonthly/30, 2) .'"/>
 					</div>
 					<div class="col-xs-2">
 						<label>Weekly Fee</label>

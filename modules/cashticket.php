@@ -27,7 +27,7 @@
 			</div>
 			<div class="col-xs-4">
 				<label>Amount <font color="red">*</font></label>
-				<input pattern = "[0-9.]" class="form-control input-sm" name = "amount" placeholder = "Enter amount of collection"/>
+				<input  class="form-control input-sm" name = "amount" placeholder = "Enter amount of collection"/>
 			</div>
 		</div>
 		<div class="row">
