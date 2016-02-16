@@ -99,6 +99,12 @@
             useHTML: true
         },
         plotOptions: {
+            series: {
+                dataLabels: {
+                    enabled: true,
+                    format: '₱ {point.y:,.2f}'
+                },
+            },
             column: {
                 pointPadding: 0.2,
                 borderWidth: 0

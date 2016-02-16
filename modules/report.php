@@ -88,12 +88,12 @@
 			</select>
 			<button class="btn btn-primary btn-sm"><span class = "icon-search"></span> Search </button>
 			<a href="?module=report" class="btn btn-danger btn-sm"><span class = "icon-spinner11"></span> Clear </a>
-			<button class="btn btn-success btn-sm" onclick="window.print();"><span class = "icon-printer"></span> Print Report</button>
+			<a class="btn btn-success btn-sm" onclick="window.print()"><span class = "icon-printer"></span> Print Report</a>
 		</form>		
 	</div>
 </div>
 <?php
-	if(isset($_GET['year'])){
+	if(isset($_GET['year']) && $_GET['year'] != date('Y')){
 		$repdate = 'For the Year of <b>'. mysqli_real_escape_string($conn, $_GET['year']);
 	}else{
 		$repdate = 'For the Month of <b>' . date ("F Y");
@@ -1045,7 +1045,7 @@
 			</tr>
 		</tbody>
 	</table>
-	<div class="row">
+	<div class="row" style="margin-top: -15px;">
 		<div class="col-xs-4 col-xs-offset-1">
 			<br><p>Prepared by:</p>
 		</div>
@@ -1057,16 +1057,16 @@
 	<div class="row">
 		<div class="col-xs-4 col-xs-offset-1" style="text-align: center;">
 			<p><b><?php echo strtoupper($data['aaide']);?></b></p>
-			<p>Admin Aide IV</p>
+			<p><?php echo strtoupper($data['post2']);?></p>
 		</div>
 		<div class="col-xs-4 col-xs-offset-3">
 			<p>Noted by:</p>
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-xs-4 col-xs-offset-7" style="text-align: center;">
+		<div class="col-xs-4 col-xs-offset-8" style="text-align: center;">
 			<p><b><?php echo strtoupper($data['mvisor']);?></b></p>
-			<p>Market Supervisor</p>
+			<p><?php echo strtoupper($data['post1']);?></p>
 		</div>
 	</div>
 </div>

@@ -4,19 +4,27 @@
 ?>
 <div class="container">
 	<form action = "" method="post">
-		<div class="row" align="center">
-			<div class="col-xs-7" style="margin-left: -40px;"><h4><i>Report Settings</i></h4></div>
+		<div class="row">
+			<div class="col-xs-7" style=""><h4><i>Report Settings</i></h4></div>
 		</div>
 		<div class="row">
-			<div class="col-xs-6 col-xs-offset-3">
+			<div class="col-xs-5 col-xs-offset-1">
 				<label>Market Supervisor</label>
-				<input value = "<?php echo $data['mvisor'];?>" style = "text-transform: uppercase;" required type = "text" class="form-control input-sm" name = "mvisor" placeholder = "Enter Market Supervisor Name"/>
+				<input value = "<?php echo $data['mvisor'];?>" style = "text-transform: uppercase;" required type = "text" class="form-control input-sm" name = "mvisor" placeholder = "Enter Name"/>
+			</div>
+			<div class="col-xs-5">
+				<label>Position</label>
+				<input value = "<?php echo $data['post1'];?>" required type = "text" class="form-control input-sm" name = "post1" placeholder = "Enter Position"/>
 			</div>
 		</div>
 		<div class="row">
-			<div class="col-xs-6 col-xs-offset-3">
-				<label>Admin Aide IV</label>
-				<input value = "<?php echo $data['aaide'];?>" style = "text-transform: uppercase;" required type = "text" class="form-control input-sm" name = "aaide" placeholder = "Enter Admin Aide IV Name"/>
+			<div class="col-xs-5 col-xs-offset-1">
+				<label>Name</label>
+				<input value = "<?php echo $data['aaide'];?>" style = "text-transform: uppercase;" required type = "text" class="form-control input-sm" name = "aaide" placeholder = "Enter Name"/>
+			</div>
+			<div class="col-xs-5">
+				<label>Position</label>
+				<input value = "<?php echo $data['post2'];?>" required type = "text" class="form-control input-sm" name = "post2" placeholder = "Enter Position"/>
 			</div>
 		</div>
 		<div class="row">
@@ -29,8 +37,8 @@
 </div>
 <?php
 	if(isset($_POST['repset'])){
-		$stmt = $conn->prepare("UPDATE `references` set mvisor = ?, aaide = ?");
-		$stmt->bind_param("ss", strtoupper($_POST['mvisor']), strtoupper($_POST['aaide']));
+		$stmt = $conn->prepare("UPDATE `references` set mvisor = ?, post1 = ?, aaide = ?, post2 = ?");
+		$stmt->bind_param("ssss", strtoupper($_POST['mvisor']), $_POST['post1'], strtoupper($_POST['aaide']), $_POST['post2']);
 		if($stmt->execute()){
 			echo '<script type = "text/javascript"> alert("Record Updated"); window.location.href = "?module=resettings";</script>';
 		}

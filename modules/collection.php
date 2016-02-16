@@ -10,12 +10,27 @@
 				if($or['type'] == 'Market Fee'){
 					$edmfee += $or['amount'];
 					$tymfee = 1;
+					if(!empty($or['checknum'])){
+						$mchck = $or['checknum'];
+					}else{
+						$mchck = "";
+					}
 				}elseif($or['type'] == 'Electric Bill'){
 					$edbill += $or['amount'];
 					$tyebill = 1;
+					if(!empty($or['checknum'])){
+						$echck = $or['checknum'];
+					}else{
+						$echck = "";
+					}
 				}elseif($or['type'] == 'Water Bill'){
 					$edwbill += $or['amount'];
 					$tywbill = 1;
+					if(!empty($or['checknum'])){
+						$wchck = $or['checknum'];
+					}else{
+						$wchck = "";
+					}
 				}elseif($or['type'] == "Market Clearance"){
 					$edmclear += $or['amount'];
 					$tymclear = 1;
@@ -40,6 +55,11 @@
 				}elseif($or['type'] == "Goodwill"){
 					$edgwill += $or['amount'];
 					$typgwill = 1;
+					if(!empty($or['checknum'])){
+						$gchck = $or['checknum'];
+					}else{
+						$gchck = "";
+					}
 				}elseif($or['type'] == "TCT"){
 					$edtct += $or['amount'];
 					$typtct = 1;
@@ -60,7 +80,8 @@
 			}
 		});
 		$("#numofdays").change(function(){
-			$("input[name='mfeeamount']").val($("#numofdays").val() * $("#dailyfee").val());
+			var calfee = parseInt($("#numofdays").val()) * parseFloat($("#dailyfee").val());
+			$("input[name='mfeeamount']").val(calfee.toFixed(2));
 		});
 		<?php if(isset($dataor['store_id'])){ ?>
 		$("#ownerfee").ready(function(){
@@ -196,6 +217,63 @@
 		    $("#chckamount").attr('required',false);
 		    $("#chckamount").attr('name',false);
 		    $("#chcknum").attr('required',false);
+		  }
+		});
+		$('#echckb').change(function(){
+		  if($('#echckb').is(":checked")){           
+		    $("#ecash").hide();
+		    $("#echck").show();
+		    $("#ebillamount").attr('required',false);        
+		    $("#ebillamount").attr('name',"false");
+		    $("#echckamount").attr('required',true);
+		    $("#echckamount").attr('name',"ebillamount");
+		    $("#echcknum").attr('required',true);
+		  }else{
+		    $("#ecash").show();
+		    $("#echck").hide();
+		    $("#ebillamount").attr('required',true);       
+		    $("#ebillamount").attr('name',"ebillamount");
+		    $("#echckamount").attr('required',false);
+		    $("#echckamount").attr('name',false);
+		    $("#echcknum").attr('required',false);
+		  }
+		});
+		$('#wchckb').change(function(){
+		  if($('#wchckb').is(":checked")){           
+		    $("#wcash").hide();
+		    $("#wchck").show();
+		    $("#wbillamount").attr('required',false);        
+		    $("#wbillamount").attr('name',"false");
+		    $("#wchckamount").attr('required',true);
+		    $("#wchckamount").attr('name',"wbillamount");
+		    $("#wchcknum").attr('required',true);
+		  }else{
+		    $("#wcash").show();
+		    $("#wchck").hide();
+		    $("#wbillamount").attr('required',true);       
+		    $("#wbillamount").attr('name',"wbillamount");
+		    $("#wchckamount").attr('required',false);
+		    $("#wchckamount").attr('name',false);
+		    $("#wchcknum").attr('required',false);
+		  }
+		});
+		$('#gchckb').change(function(){
+		  if($('#gchckb').is(":checked")){           
+		    $("#gcash").hide();
+		    $("#gchck").show();
+		    $("#gamount").attr('required',false);        
+		    $("#gamount").attr('name',"false");
+		    $("#gchckamount").attr('required',true);
+		    $("#gchckamount").attr('name',"gamount");
+		    $("#gchcknum").attr('required',true);
+		  }else{
+		    $("#gcash").show();
+		    $("#gchck").hide();
+		    $("#gamount").attr('required',true);       
+		    $("#gamount").attr('name',"gamount");
+		    $("#gchckamount").attr('required',false);
+		    $("#gchckamount").attr('name',false);
+		    $("#gchcknum").attr('required',false);
 		  }
 		});
 	});
@@ -381,18 +459,18 @@
 						<input type = "text" readonly class = "form-control input-sm" value = "0"/>
 					</div>
 				</div>
-				<div class="col-xs-5" id = "cash" <?php if(isset($dataor['checknum']) && $dataor['checknum'] != null){ echo ' style = "display: none;" ';}?>>
+				<div class="col-xs-5" id = "cash" <?php if(isset($mchck) && $mchck != null && $edmfee > 0){ echo ' style = "display: none;" ';}?>>
 					<label>Amount: <font color="red">*</font></label>
-					<input id = "mfeeamount" autocomplete = "off" type="text" class="form-control input-sm" <?php if(!isset($dataor['checknum']) && isset($_GET['or']) && $edmfee > 0){ echo ' value = "' . $edmfee . '" name = "mfeeamount" ';}elseif(!isset($_GET['or'])){echo ' name = "mfeeamount" ';}?> placeholder = "Enter Amount Paid"/>
+					<input id = "mfeeamount" autocomplete = "off" type="text" class="form-control input-sm" <?php if(!isset($mchck) && isset($_GET['or']) && $edmfee > 0){ echo ' value = "' . $edmfee . '" name = "mfeeamount" ';}elseif(!isset($_GET['or'])){echo ' name = "mfeeamount" ';}?> placeholder = "Enter Amount Paid"/>
 				</div>				
-				<div id = "chck" <?php if(isset($dataor['checknum']) && $dataor['checknum'] != null){}else{ echo ' style = "display: none;"';}?>>
+				<div id = "chck" <?php if(isset($mchck) && $mchck != null && $edmfee > 0){}else{ echo ' style = "display: none;"';}?>>
 					<div class="col-xs-3">
 						<label>Amount: <font color="red">*</font></label>
-						<input id = "chckamount" autocomplete = "off" type="text" <?php if(isset($dataor['checknum']) && $dataor['checknum'] != null && $edmfee > 0){ echo ' value = "' . $edmfee . '" name = "mfeeamount"';}?> class="form-control input-sm" placeholder = "Enter Amount Paid"/>
+						<input id = "chckamount" autocomplete = "off" type="text" <?php if(isset($mchck) && $mchck != null && $edmfee > 0){ echo ' value = "' . $edmfee . '" name = "mfeeamount"';}?> class="form-control input-sm" placeholder = "Enter Amount Paid"/>
 					</div>
 					<div class="col-xs-3">
 						<label>Check #: <font color="red">*</font></label>
-						<input <?php if(isset($dataor['checknum'])){ echo ' value = "' . $dataor['checknum'] . '"'; } ?> id = "chcknum" name = "chcknum" type="text" class="form-control input-sm" placeholder = "Enter Check Number"/>
+						<input <?php if(isset($mchck) && $edmfee > 0){ echo ' value = "' . $mchck . '"'; } ?> id = "chcknum" name = "chcknum" type="text" class="form-control input-sm" placeholder = "Enter Check Number"/>
 					</div>
 				</div>
 			</div>
@@ -418,9 +496,24 @@
 					<label>Date of Payment To:  <font color="red">*</font></label>
 					<input type="date" name = "ebilldateto" id = "ewklymonto" class="form-control input-sm" value="<?php if(isset($tyebill) && $tyebill == 1){ echo $dataor['dateto']; }else{ echo date("Y-m-d");} ?>"/>
 				</div>
-				<div class="col-xs-5">
+				<div class="col-xs-5" id = "ecash" <?php if(isset($echck) && $echck != null && $edbill > 0){ echo ' style = "display: none;" ';}?>>
 					<label>Amount: <font color="red">*</font></label>
-					<input name="ebillamount" autocomplete = "off" type="text" class="form-control input-sm" placeholder = "Enter Amount" <?php if(isset($dataor['amount']) && $edbill > 0){ echo ' value = "' . $edbill . '" '; } ?> />
+					<input id = "ebillamount" autocomplete = "off" type="text" class="form-control input-sm" <?php if(!isset($echck) && isset($_GET['or']) && $edbill > 0){ echo ' value = "' . $edbill . '" name = "ebillamount" ';}elseif(!isset($_GET['or'])){echo ' name = "ebillamount" ';}?> placeholder = "Enter Amount Paid"/>
+				</div>
+				<div id = "echck" <?php if(isset($echck) && $echck != null && $edbill > 0){}else{ echo ' style = "display: none;"';}?>>
+					<div class="col-xs-3">
+						<label>Amount: <font color="red">*</font></label>
+						<input id = "echckamount" autocomplete = "off" type="text" <?php if(isset($echck) && $echck != null && $edbill > 0){ echo ' value = "' . $edbill . '" name = "ebillamount"';}?> class="form-control input-sm" placeholder = "Enter Amount Paid"/>
+					</div>
+					<div class="col-xs-3">
+						<label>Check #: <font color="red">*</font></label>
+						<input <?php if(isset($echck) && $edbill > 0){ echo ' value = "' . $echck . '"'; } ?> id = "echcknum" name = "echcknum" type="text" class="form-control input-sm" placeholder = "Enter Check Number"/>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-offset-6 col-xs-4" align="left">
+					<label><input type = "checkbox" id ="echckb" <?php if($echck != ""){ echo ' checked '; } ?>  name = "echcb" /> Switch to Check</label>
 				</div>
 			</div>
 		</div>
@@ -440,9 +533,24 @@
 					<label>Date of Payment To:  <font color="red">*</font></label>
 					<input type="date" name = "wbilldateto" class="form-control input-sm" value="<?php if(isset($tywbill) && $tywbill == 1){ echo $dataor['dateto']; }else{ echo date("Y-m-d");} ?>"/>
 				</div>
-				<div class="col-xs-5">
+				<div class="col-xs-5" id = "wcash" <?php if(isset($wchck) && $wchck != null && $edwbill > 0){ echo ' style = "display: none;" ';}?>>
 					<label>Amount: <font color="red">*</font></label>
-					<input <?php if(isset($dataor['type']) && $dataor['type'] == 'Water Bill' && $edwbill > 0 ){ echo ' value = "'.$edwbill.'" '; }?> autocomplete = "off" name="wbillamount" type="text" class="form-control input-sm" placeholder = "Enter Amount"/>
+					<input id = "wbillamount" autocomplete = "off" type="text" class="form-control input-sm" <?php if(!isset($wchck) && isset($_GET['or']) && $edwbill > 0){ echo ' value = "' . $edwbill . '" name = "wbillamount" ';}elseif(!isset($_GET['or'])){echo ' name = "wbillamount" ';}?> placeholder = "Enter Amount Paid"/>
+				</div>
+				<div id = "wchck" <?php if(isset($wchck) && $wchck != null && $edwbill > 0){}else{ echo ' style = "display: none;"';}?>>
+					<div class="col-xs-3">
+						<label>Amount: <font color="red">*</font></label>
+						<input id = "wchckamount" autocomplete = "off" type="text" <?php if(isset($wchck) && $wchck != null && $edwbill > 0){ echo ' value = "' . $edwbill . '" name = "wbillamount"';}?> class="form-control input-sm" placeholder = "Enter Amount Paid"/>
+					</div>
+					<div class="col-xs-3">
+						<label>Check #: <font color="red">*</font></label>
+						<input <?php if(isset($wchck) && $edwbill > 0){ echo ' value = "' . $wchck . '"'; } ?> id = "wchcknum" name = "wchcknum" type="text" class="form-control input-sm" placeholder = "Enter Check Number"/>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-offset-6 col-xs-4" align="left">
+					<label><input type = "checkbox" id ="wchckb" <?php if($wchck != ""){ echo ' checked '; } ?>  name = "wchcb" /> Switch to Check</label>
 				</div>
 			</div>
 		</div>
@@ -552,9 +660,24 @@
 				</div>
 			</div>
 			<div class="row">
-				<div class="col-xs-5">
+				<div class="col-xs-5" id = "gcash" <?php if(isset($gchck) && $gchck != null && $edgwill > 0){ echo ' style = "display: none;" ';}?>>
 					<label>Amount: <font color="red">*</font></label>
-					<input <?php if(isset($typgwill) && $edgwill > 0){ echo ' value = "'.$edgwill.'" '; }?>autocomplete = "off" name="gamount" type="text" class="form-control input-sm" placeholder = "Enter Amount"/>
+					<input id = "gamount" autocomplete = "off" type="text" class="form-control input-sm" <?php if(!isset($gchck) && isset($_GET['or']) && $edgwill > 0){ echo ' value = "' . $edgwill . '" name = "gamount" ';}elseif(!isset($_GET['or'])){echo ' name = "gamount" ';}?> placeholder = "Enter Amount Paid"/>
+				</div>
+				<div id = "gchck" <?php if(isset($gchck) && $gchck != null && $edwbill > 0){}else{ echo ' style = "display: none;"';}?>>
+					<div class="col-xs-3">
+						<label>Amount: <font color="red">*</font></label>
+						<input id = "gchckamount" autocomplete = "off" type="text" <?php if(isset($gchck) && $gchck != null && $edgwill > 0){ echo ' value = "' . $edgwill . '" name = "gamount"';}?> class="form-control input-sm" placeholder = "Enter Amount Paid"/>
+					</div>
+					<div class="col-xs-3">
+						<label>Check #: <font color="red">*</font></label>
+						<input <?php if(isset($gchck) && $edgwill > 0){ echo ' value = "' . $gchck . '"'; } ?> id = "gchcknum" name = "gchcknum" type="text" class="form-control input-sm" placeholder = "Enter Check Number"/>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-4" align="left">
+					<label><input type = "checkbox" id ="gchckb" <?php if($gchck != ""){ echo ' checked '; } ?> name = "gchcb" /> Switch to Check</label>
 				</div>
 			</div>
 		</div>
@@ -627,16 +750,26 @@
 		}
 		if(isset($_POST['ebillamount']) && !empty($_POST['ebillamount'])){
 			$type = "Electric Bill";
-			$stmt = $conn->prepare("INSERT INTO collection (paydate, invoice, store_id, owner_id, ornum, amount, datefr, dateto, type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-			$stmt->bind_param("ssiiidsss", $_POST['datecollect'], $_POST['invoicenum'], $_POST['strename'], $_POST['streown'], $_POST['ornum'], $_POST['ebillamount'], $_POST['ebilldatefr'], $_POST['ebilldateto'], $type);	
+			if(isset($_POST['echcknum']) && !empty($_POST['echcknum'])){
+				$_POST['echcknum'] = $_POST['echcknum'];
+			}else{
+				$_POST['echcknum'] = null;
+			}
+			$stmt = $conn->prepare("INSERT INTO collection (paydate, invoice, store_id, owner_id, ornum, amount, datefr, dateto, type, checknum) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+			$stmt->bind_param("ssiiidssss", $_POST['datecollect'], $_POST['invoicenum'], $_POST['strename'], $_POST['streown'], $_POST['ornum'], $_POST['ebillamount'], $_POST['ebilldatefr'], $_POST['ebilldateto'], $type, $_POST['echcknum']);	
 			if($stmt->execute()){
 				$count += 1;
 			}
 		}
 		if(isset($_POST['wbillamount']) && !empty($_POST['wbillamount'])){
 			$type = "Water Bill";
-			$stmt = $conn->prepare("INSERT INTO collection (paydate, invoice, store_id, owner_id, ornum, amount, datefr, dateto, type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-			$stmt->bind_param("ssiiidsss", $_POST['datecollect'], $_POST['invoicenum'], $_POST['strename'], $_POST['streown'], $_POST['ornum'], $_POST['wbillamount'], $_POST['wbilldatefr'], $_POST['wbilldateto'], $type);	
+			if(isset($_POST['wchcknum']) && !empty($_POST['wchcknum'])){
+				$_POST['wchcknum'] = $_POST['wchcknum'];
+			}else{
+				$_POST['wchcknum'] = null;
+			}
+			$stmt = $conn->prepare("INSERT INTO collection (paydate, invoice, store_id, owner_id, ornum, amount, datefr, dateto, type, checknum) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+			$stmt->bind_param("ssiiidssss", $_POST['datecollect'], $_POST['invoicenum'], $_POST['strename'], $_POST['streown'], $_POST['ornum'], $_POST['wbillamount'], $_POST['wbilldatefr'], $_POST['wbilldateto'], $type, $_POST['wchcknum']);	
 			if($stmt->execute()){
 				$count += 1;
 			}
@@ -699,8 +832,13 @@
 		}
 		if(isset($_POST['gamount']) && !empty($_POST['gamount'])){
 			$type = "Goodwill";
-			$stmt = $conn->prepare("INSERT INTO collection (paydate, invoice, store_id, owner_id, ornum, amount, type) VALUES (?, ?, ?, ?, ?, ?, ?)");
-			$stmt->bind_param("ssiiids", $_POST['datecollect'], $_POST['invoicenum'], $_POST['strename'], $_POST['streown'], $_POST['ornum'], $_POST['gamount'], $type);	
+			if(isset($_POST['gchcknum']) && !empty($_POST['gchcknum'])){
+				$_POST['gchcknum'] = $_POST['gchcknum'];
+			}else{
+				$_POST['gchcknum'] = null;
+			}
+			$stmt = $conn->prepare("INSERT INTO collection (paydate, invoice, store_id, owner_id, ornum, amount, type, checknum) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+			$stmt->bind_param("ssiiidss", $_POST['datecollect'], $_POST['invoicenum'], $_POST['strename'], $_POST['streown'], $_POST['ornum'], $_POST['gamount'], $type, $_POST['gchcknum']);	
 			if($stmt->execute()){
 				$count += 1;
 			}

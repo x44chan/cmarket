@@ -24,17 +24,17 @@ if(isset($_GET['x'])){
 	if($result->num_rows > 0){
 		echo '<option value="">-------</option>';
 		while($row = $result->fetch_assoc()){	
-
-$orfroms=$row['orfrom'];
-$ortos=$row['orto']+1;		
-while($orfroms < $ortos) {
-			$sql = "SELECT * FROM `collection` where ornum = '$orfroms' ";
+			$orfroms=$row['orfrom'];
+			$ortos=$row['orto']+1;		
+			while($orfroms < $ortos) {
+				$sql = "SELECT * FROM `collection` where ornum = '$orfroms' ";
 				$result = $conn->query($sql);
-						if($result->num_rows >	 0){
-					  }else{
-								echo '<option value = "'.$orfroms.'">' . $orfroms .' </option>'; 
-						}
-			$orfroms++;}
+				if($result->num_rows >	 0){
+				}else{
+					echo '<option value = "'.$orfroms.'">' . $orfroms .' </option>'; 
+				}
+			$orfroms++;
+			}
 		}
 	}
 	$conn->close();
@@ -58,18 +58,20 @@ while($orfroms < $ortos) {
 					$dmonthly=number_format($row['area'] * $row['multi'] * 30+100, 2);
 				}
 				$dmonthly = str_replace(",","",$dmonthly);
+				$xplode = explode('.', $dmonthly/30);
+				$daily = $xplode[0] . '.' . substr($xplode[1], 0, 2);
 				echo '				
 					<div class="col-xs-2">
 						<label>Daily Fee</label>
-						<input type = "text" readonly id = "dailyfee" class = "form-control input-sm" value = "'. number_format($dmonthly/30, 2) .'"/>
+						<input type = "text" readonly id = "dailyfee" class = "form-control input-sm" value = "'. number_format($daily, 2) .'"/>
 					</div>
 					<div class="col-xs-2">
 						<label>Weekly Fee</label>
-						<input type = "text" readonly class = "form-control input-sm" value = "'. number_format(($dmonthly/30) * 7, 2) .'"/>
+						<input type = "text" readonly class = "form-control input-sm" value = "'. number_format($daily * 7, 2) .'"/>
 					</div>				
 					<div class="col-xs-2">
 						<label>Monthly Fee</label>
-						<input type = "text" readonly class = "form-control input-sm" value = "'.$dmonthly .'"/>
+						<input type = "text" readonly class = "form-control input-sm" value = "'. number_format($dmonthly, 2) .'"/>
 					</div>';					  
 			}
 		}
