@@ -58,7 +58,8 @@ if(isset($_GET['x'])){
 					$dmonthly=number_format($row['area'] * $row['multi'] * 30+100, 2);
 				}
 				$dmonthly = str_replace(",","",$dmonthly);
-				$xplode = explode('.', $dmonthly/30);
+				$xplode = explode('.', number_format($dmonthly/30,3));
+
 				$daily = $xplode[0] . '.' . substr($xplode[1], 0, 2);
 				echo '				
 					<div class="col-xs-2">

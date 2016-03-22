@@ -300,8 +300,12 @@
 						$stmt = "SELECT * FROM orissuance where issueddate = curdate()";;
 						$result = $conn->query($stmt);		
 						if($result->num_rows > 0){
-							while($row = $result->fetch_assoc()){								
-								echo '<option value ="' . $row['issuanceid'] . '">' . $row['invoiceno'] . '</option>';
+							while($row = $result->fetch_assoc()){	
+								$sql1 = "SELECT * FROM collection where invoice = '$row[invoiceno]' order by ornum desc";
+								$data = $conn->query($sql1)->fetch_assoc();
+								if($data['ornum'] != $row['orto']){
+									echo '<option value ="' . $row['issuanceid'] . '">' . $row['invoiceno'] . '</option>';
+								}
 							}
 						}
 					?>					
@@ -461,7 +465,7 @@
 				</div>
 				<div class="col-xs-5" id = "cash" <?php if(isset($mchck) && $mchck != null && $edmfee > 0){ echo ' style = "display: none;" ';}?>>
 					<label>Amount: <font color="red">*</font></label>
-					<input id = "mfeeamount" autocomplete = "off" type="text" class="form-control input-sm" <?php if(!isset($mchck) && isset($_GET['or']) && $edmfee > 0){ echo ' value = "' . $edmfee . '" name = "mfeeamount" ';}elseif(!isset($_GET['or'])){echo ' name = "mfeeamount" ';}?> placeholder = "Enter Amount Paid"/>
+					<input id = "mfeeamount" autocomplete = "off" type="text" class="form-control input-sm" <?php if(isset($mchck) && $mchck == "" && isset($_GET['or']) && $edmfee > 0){ echo ' value = "' . $edmfee . '" name = "mfeeamount" ';}elseif(!isset($_GET['or'])){echo ' name = "mfeeamount" ';}?> placeholder = "Enter Amount Paid"/>
 				</div>				
 				<div id = "chck" <?php if(isset($mchck) && $mchck != null && $edmfee > 0){}else{ echo ' style = "display: none;"';}?>>
 					<div class="col-xs-3">
@@ -513,7 +517,7 @@
 			</div>
 			<div class="row">
 				<div class="col-xs-offset-6 col-xs-4" align="left">
-					<label><input type = "checkbox" id ="echckb" <?php if($echck != ""){ echo ' checked '; } ?>  name = "echcb" /> Switch to Check</label>
+					<label><input type = "checkbox" id ="echckb" <?php if(isset($echck) && $echck != ""){ echo ' checked '; } ?>  name = "echcb" /> Switch to Check</label>
 				</div>
 			</div>
 		</div>
@@ -550,7 +554,7 @@
 			</div>
 			<div class="row">
 				<div class="col-xs-offset-6 col-xs-4" align="left">
-					<label><input type = "checkbox" id ="wchckb" <?php if($wchck != ""){ echo ' checked '; } ?>  name = "wchcb" /> Switch to Check</label>
+					<label><input type = "checkbox" id ="wchckb" <?php if(isset($wchck) && $wchck != ""){ echo ' checked '; } ?>  name = "wchcb" /> Switch to Check</label>
 				</div>
 			</div>
 		</div>
@@ -677,7 +681,7 @@
 			</div>
 			<div class="row">
 				<div class="col-xs-4" align="left">
-					<label><input type = "checkbox" id ="gchckb" <?php if($gchck != ""){ echo ' checked '; } ?> name = "gchcb" /> Switch to Check</label>
+					<label><input type = "checkbox" id ="gchckb" <?php if(isset($gchck) && $gchck != ""){ echo ' checked '; } ?> name = "gchcb" /> Switch to Check</label>
 				</div>
 			</div>
 		</div>
