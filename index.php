@@ -43,6 +43,7 @@
             		<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="icon-folder"></span> Reports <b class="caret"></b></a>
             		<ul class="dropdown-menu" role="menu">
                 		<li><a role = "button" href = "?module=report"><span class="icon-file-text"></span> Cash Collection Report </a></li>
+                		<li><a role = "button" href = "?module=reppayment"><span class="icon-file-text"></span> Client Payment Report </a></li>
                 		<li><a role = "button" href = "?module=graph"><span class="icon-stats-bars"></span> Cash Collection Graph </a></li>
                 	</ul>
             	</li>
