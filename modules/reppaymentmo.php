@@ -72,7 +72,31 @@
 <div class="container-fluid">
 	<div class="col-xs-12 form-inline" align="right">
 		<form action = "" method="get">
-			<input type = 'hidden' name = "module" value = "report">
+			<input type = 'hidden' name = "module" value = "reppaymentmo">
+			<?php if(!isset($_GET['print'])){ ?>
+			<b>Select Owner: </b> 
+			<select required name = "streown" class="form-control input-sm" >
+				<option value=""> ---------- </option>	
+				<?php
+					$stmt = "SELECT * FROM `owner` ORDER BY `lname` ASC";
+					$result = $conn->query($stmt);		
+					if($result->num_rows > 0){
+						while($row = $result->fetch_assoc()){		
+
+							if(isset($dataor['owner_id']) && $row['owner_id'] == $dataor['owner_id']){
+								$s = ' selected ';
+							}else{
+								$s = '';
+							}
+							if(isset($_GET['streown']) && $_GET['streown'] == $row['owner_id']){
+								$s = ' selected ';
+							}
+							echo '<option '.$s.' value ="' . $row['owner_id'] . '">' . $row['lname'] . ', ' . $row['fname'] . ' ' . $row['mname'] . '</option>';
+						}
+					}
+				?>	
+			</select>
+			<?php } ?>
 			<select class="form-control input-sm" name = "year" required/>
 				<option <?php if(isset($_GET['year']) && $_GET['year'] == date("Y")){ echo ' selected '; } ?> value="<?php echo date('Y');?>"> <?php echo date('Y'); $year = date("Y");?> </option>
 				<?php
@@ -92,9 +116,10 @@
 				?>
 			</select>
 			<button class="btn btn-primary btn-sm"><span class = "icon-search"></span> Search </button>
-			<a href="?module=report" class="btn btn-danger btn-sm"><span class = "icon-spinner11"></span> Clear </a>
-			<a href = "?module=report<?php if(isset($_GET['year'])){ echo '&year=' . $_GET['year'];}?>&print"class="btn btn-success btn-sm"><span class = "icon-printer"></span> Print Report</a>
-		</form>		
+			<a href = "?module=reppaymentmo" class="btn btn-danger btn-sm"><span class = "icon-spinner11"></span> Clear </a>
+			<a href = "?module=reppaymentmo<?php if(isset($_GET['streown'])){ echo '&streown=' . $_GET['streown'];} if(isset($_GET['year'])){ echo '&year=' . $_GET['year'];}?>&print" class="btn btn-success btn-sm"><span class = "icon-printer"></span> Print Report</a>
+		</form>	
+		<hr>	
 	</div>
 </div>
 <?php
@@ -103,16 +128,34 @@
 	}else{
 		$repdate = 'For the Month of <b>' . date ("F Y");
 	}
+	if(isset($_GET['streown'])){
+		$streown = mysqli_real_escape_string($conn, $_GET['streown']);
+		$sqlxx = "SELECT * FROM owner where owner_id = '$streown'";
+		$data = $conn->query($sqlxx)->fetch_assoc();
+		if($data['lname'] != " "){
+			$data['lname'] = $data['lname'] . ', ';
+		}
+		$name = $data['lname'] . $data['fname'] . ' ' . $data['mname']; 
+	}else{
+		$streown = '';
+		$name = " ( - ) ";
+	}
+	
 ?>
 <div class="container-fluid" id = "reportg">
 	<div class="row">
-		<div class="col-xs-12" align="center">
-			<p style="margin-bottom: -.5px;">Republic of the Philippines</p>
-			<p style="margin-bottom: -.5px;">Province of Batangas</p>
-			<p>Municipality of <b>Calaca</b></p>
-			<p><b>OFFICE OF THE MARKET ADMINISTRATOR</b></p>
-			<p style="margin-bottom: -.5px;"><b>CASH COLLECTION REPORT</b></p>
-			<p><?php echo $repdate;?></b></p>
+		<div class="row">
+			<div class="col-xs-12" align="center">
+				<p style="margin-bottom: -.5px;">Republic of the Philippines</p>
+				<p style="margin-bottom: -.5px;">Province of Batangas</p>
+				<p style="margin-bottom: -.5px;">Municipality of <b>Calaca</b></p>
+				<p>
+					<i>
+						Payment History of <b><?php echo $name;?></b><br>
+						( as of <?php echo date("M d, Y") ?> )
+					</i>
+				</p>		
+			</div>
 		</div>
 	</div>
 	<table class="table" border = '1' id = "tbl" style="text-align: center">
@@ -136,7 +179,7 @@
 					$year = mysqli_real_escape_string($conn, $_GET['year']);
 				}
 				
-				$cticket = "SELECT * FROM `collection` where YEAR(paydate) = '$year' and type = 'Cash Ticket'";
+				$cticket = "SELECT * FROM `collection` where owner_id = '$streown' and YEAR(paydate) = '$year' and type = 'Cash Ticket'";
 				$ctres = $conn->query($cticket);
 				$ctjan = 0; $ctfeb = 0; $ctmar = 0; $ctapr = 0; $ctmay = 0; $ctjun = 0; $ctjul = 0; $ctaug = 0; $ctsep = 0; $ctoct = 0; $ctnov = 0; $ctdec = 0; $cttotal = 0;
 				if($ctres->num_rows > 0){
@@ -200,7 +243,7 @@
 				<td> <b><?php if($cttotal > 0){ echo number_format($cttotal,2); } else { echo ' - '; }?> </td>
 			</tr>
 			<?php
-				$btax = "SELECT * FROM `collection` where YEAR(paydate) = '$year' and type = 'Business Tax'";
+				$btax = "SELECT * FROM `collection` where owner_id = '$streown' and YEAR(paydate) = '$year' and type = 'Business Tax'";
 				$btres = $conn->query($btax);
 				$btjan = 0; $btfeb = 0; $btmar = 0; $btapr = 0; $btmay = 0; $btjun = 0; $btjul = 0; $btaug = 0; $btsep = 0; $btoct = 0; $btnov = 0; $btdec = 0; $bttotal = 0;
 				if($btres->num_rows > 0){
@@ -264,7 +307,7 @@
 				<td> <b><?php if($bttotal > 0){ echo number_format($bttotal,2); } else { echo ' - '; }?> </td>
 			</tr>
 			<?php
-				$ebax = "SELECT * FROM `collection` where YEAR(paydate) = '$year' and type = 'Electric Bill'";
+				$ebax = "SELECT * FROM `collection` where owner_id = '$streown' and YEAR(paydate) = '$year' and type = 'Electric Bill'";
 				$ebres = $conn->query($ebax);
 				$ebjan = 0; $ebfeb = 0; $ebmar = 0; $ebapr = 0; $ebmay = 0; $ebjun = 0; $ebjul = 0; $ebaug = 0; $ebsep = 0; $eboct = 0; $ebnov = 0; $ebdec = 0; $ebtotal = 0;
 				if($ebres->num_rows > 0){
@@ -328,7 +371,7 @@
 				<td> <b><?php if($ebtotal > 0){ echo number_format($ebtotal,2); } else { echo ' - '; }?> </td>
 			</tr>
 			<?php
-				$rfax = "SELECT * FROM `collection` where YEAR(paydate) = '$year' and type = 'Renewal Fee'";
+				$rfax = "SELECT * FROM `collection` where owner_id = '$streown' and YEAR(paydate) = '$year' and type = 'Renewal Fee'";
 				$rfres = $conn->query($rfax);
 				$rfjan = 0; $rffeb = 0; $rfmar = 0; $rfapr = 0; $rfmay = 0; $rfjun = 0; $rfjul = 0; $rfaug = 0; $rfsep = 0; $rfoct = 0; $rfnov = 0; $rfdec = 0; $rftotal = 0;
 				if($rfres->num_rows > 0){
@@ -392,7 +435,7 @@
 				<td> <b><?php if($rftotal > 0){ echo number_format($rftotal,2	); } else { echo ' - '; }?> </td>
 			</tr>
 			<?php
-				$mfax = "SELECT * FROM `collection` where YEAR(paydate) = '$year' and type = 'Market Fee'";
+				$mfax = "SELECT * FROM `collection` where owner_id = '$streown' and YEAR(paydate) = '$year' and type = 'Market Fee'";
 				$mfres = $conn->query($mfax);
 				$mfjan = 0; $mffeb = 0; $mfmar = 0; $mfapr = 0; $mfmay = 0; $mfjun = 0; $mfjul = 0; $mfaug = 0; $mfsep = 0; $mfoct = 0; $mfnov = 0; $mfdec = 0; $mftotal = 0;
 				if($mfres->num_rows > 0){
@@ -456,7 +499,7 @@
 				<td> <b><?php if($mftotal > 0){ echo number_format($mftotal,2); } else { echo ' - '; }?> </td>
 			</tr>
 			<?php
-				$mcax = "SELECT * FROM `collection` where YEAR(paydate) = '$year' and type = 'Market Clearance'";
+				$mcax = "SELECT * FROM `collection` where owner_id = '$streown' and YEAR(paydate) = '$year' and type = 'Market Clearance'";
 				$mcres = $conn->query($mcax);
 				$mcjan = 0; $mcfeb = 0; $mcmar = 0; $mcapr = 0; $mcmay = 0; $mcjun = 0; $mcjul = 0; $mcaug = 0; $mcsep = 0; $mcoct = 0; $mcnov = 0; $mcdec = 0; $mctotal = 0;
 				if($mcres->num_rows > 0){
@@ -520,7 +563,7 @@
 				<td> <b><?php if($mctotal > 0){ echo number_format($mctotal,2); } else { echo ' - '; }?> </td>
 			</tr>
 			<?php
-				$amax = "SELECT * FROM `collection` where YEAR(paydate) = '$year' and type = 'Anti Mortem'";
+				$amax = "SELECT * FROM `collection` where owner_id = '$streown' and YEAR(paydate) = '$year' and type = 'Anti Mortem'";
 				$amres = $conn->query($amax);
 				$amjan = 0; $amfeb = 0; $ammar = 0; $amapr = 0; $ammay = 0; $amjun = 0; $amjul = 0; $amaug = 0; $amsep = 0; $amoct = 0; $amnov = 0; $amdec = 0; $amtotal = 0;
 				if($amres->num_rows > 0){
@@ -584,7 +627,7 @@
 				<td> <b><?php if($amtotal > 0){ echo number_format($amtotal,2); } else { echo ' - '; }?> </td>
 			</tr>
 			<?php
-				$pmax = "SELECT * FROM `collection` where YEAR(paydate) = '$year' and type = 'Post Mortem'";
+				$pmax = "SELECT * FROM `collection` where owner_id = '$streown' and YEAR(paydate) = '$year' and type = 'Post Mortem'";
 				$pmres = $conn->query($pmax);
 				$pmjan = 0; $pmfeb = 0; $pmmar = 0; $pmapr = 0; $pmmay = 0; $pmjun = 0; $pmjul = 0; $pmaug = 0; $pmsep = 0; $pmoct = 0; $pmnov = 0; $pmdec = 0; $pmtotal = 0;
 				if($pmres->num_rows > 0){
@@ -648,7 +691,7 @@
 				<td> <b><?php if($pmtotal > 0){ echo number_format($pmtotal,2); } else { echo ' - '; }?> </td>
 			</tr>
 			<?php
-				$gwax = "SELECT * FROM `collection` where YEAR(paydate) = '$year' and type = 'Goodwill'";
+				$gwax = "SELECT * FROM `collection` where owner_id = '$streown' and YEAR(paydate) = '$year' and type = 'Goodwill'";
 				$gwres = $conn->query($gwax);
 				$gwjan = 0; $gwfeb = 0; $gwmar = 0; $gwapr = 0; $gwmay = 0; $gwjun = 0; $gwjul = 0; $gwaug = 0; $gwsep = 0; $gwoct = 0; $gwnov = 0; $gwdec = 0; $gwtotal = 0;
 				if($gwres->num_rows > 0){
@@ -712,7 +755,7 @@
 				<td> <b><?php if($gwtotal > 0){ echo number_format($gwtotal,2); } else { echo ' - '; }?> </td>
 			</tr>
 			<?php
-				$tfax = "SELECT * FROM `collection` where YEAR(paydate) = '$year' and type = 'Transfer Fee'";
+				$tfax = "SELECT * FROM `collection` where owner_id = '$streown' and YEAR(paydate) = '$year' and type = 'Transfer Fee'";
 				$tfres = $conn->query($tfax);
 				$tfjan = 0; $tffeb = 0; $tfmar = 0; $tfapr = 0; $tfmay = 0; $tfjun = 0; $tfjul = 0; $tfaug = 0; $tfsep = 0; $tfoct = 0; $tfnov = 0; $tfdec = 0; $tftotal = 0;
 				if($tfres->num_rows > 0){
@@ -776,7 +819,7 @@
 				<td> <b><?php if($tftotal > 0){ echo number_format($tftotal,2); } else { echo ' - '; }?> </td>
 			</tr>
 			<?php
-				$srax = "SELECT * FROM `collection` where YEAR(paydate) = '$year' and type = 'Space Rental'";
+				$srax = "SELECT * FROM `collection` where owner_id = '$streown' and YEAR(paydate) = '$year' and type = 'Space Rental'";
 				$srres = $conn->query($srax);
 				$srjan = 0; $srfeb = 0; $srmar = 0; $srapr = 0; $srmay = 0; $srjun = 0; $srjul = 0; $sraug = 0; $srsep = 0; $sroct = 0; $srnov = 0; $srdec = 0; $srtotal = 0;
 				if($srres->num_rows > 0){
@@ -840,7 +883,7 @@
 				<td> <b><?php if($srtotal > 0){ echo number_format($srtotal,2); } else { echo ' - '; }?> </td>
 			</tr>
 			<?php
-				$tctax = "SELECT * FROM `collection` where YEAR(paydate) = '$year' and type = 'TCT'";
+				$tctax = "SELECT * FROM `collection` where owner_id = '$streown' and YEAR(paydate) = '$year' and type = 'TCT'";
 				$tctres = $conn->query($tctax);
 				$tctjan = 0; $tctfeb = 0; $tctmar = 0; $tctapr = 0; $tctmay = 0; $tctjun = 0; $tctjul = 0; $tctaug = 0; $tctsep = 0; $tctoct = 0; $tctnov = 0; $tctdec = 0; $tcttotal = 0;
 				if($tctres->num_rows > 0){
@@ -904,7 +947,7 @@
 				<td> <b><?php if($tcttotal > 0){ echo number_format($tcttotal,2); } else { echo ' - '; }?> </td>
 			</tr>
 			<?php
-				$wbax = "SELECT * FROM `collection` where YEAR(paydate) = '$year' and type = 'Water Bill'";
+				$wbax = "SELECT * FROM `collection` where owner_id = '$streown' and YEAR(paydate) = '$year' and type = 'Water Bill'";
 				$wbres = $conn->query($wbax);
 				$wbjan = 0; $wbfeb = 0; $wbmar = 0; $wbapr = 0; $wbmay = 0; $wbjun = 0; $wbjul = 0; $wbaug = 0; $wbsep = 0; $wboct = 0; $wbnov = 0; $wbdec = 0; $wbtotal = 0;
 				if($wbres->num_rows > 0){
@@ -968,7 +1011,7 @@
 				<td> <b><?php if($wbtotal > 0){ echo number_format($wbtotal,2); } else { echo ' - '; }?> </td>
 			</tr>
 			<?php
-				$certax = "SELECT * FROM `collection` where YEAR(paydate) = '$year' and type = 'Certification'";
+				$certax = "SELECT * FROM `collection` where owner_id = '$streown' and YEAR(paydate) = '$year' and type = 'Certification'";
 				$certres = $conn->query($certax);
 				$certjan = 0; $certfeb = 0; $certmar = 0; $certapr = 0; $certmay = 0; $certjun = 0; $certjul = 0; $certaug = 0; $certsep = 0; $certoct = 0; $certnov = 0; $certdec = 0; $certtotal = 0;
 				if($certres->num_rows > 0){
@@ -1050,34 +1093,12 @@
 			</tr>
 		</tbody>
 	</table>
-	<div class="row" style="margin-top: -15px;">
-		<div class="col-xs-4 col-xs-offset-1">
-			<br><p>Prepared by:</p>
-		</div>
-	</div>
-	<?php
-		$stmt = "SELECT * FROM `references`";
-		$data = $conn->query($stmt)->fetch_assoc();
-	?>
-	<div class="row">
-		<div class="col-xs-4 col-xs-offset-1" style="text-align: center;">
-			<p><b><?php echo strtoupper($data['aaide']);?></b></p>
-			<p><?php echo strtoupper($data['post2']);?></p>
-		</div>
-		<div class="col-xs-4 col-xs-offset-3">
-			<p>Noted by:</p>
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-xs-4 col-xs-offset-8" style="text-align: center;">
-			<p><b><?php echo strtoupper($data['mvisor']);?></b></p>
-			<p><?php echo strtoupper($data['post1']);?></p>
-		</div>
-	</div>
 </div>
 <?php
+	$datefr = ""; $dateto = ""; $streown = "";
+	if(isset($_GET['datefr'])){ $sby = '&streown=' . $_GET['streown'];} 
 	if(isset($_GET['dateto'])){ $search = '&year=' . $_GET['year'];}
 	if(isset($_GET['print'])){
-		echo '<script type = "text/javascript">	window.print();window.location.href = "?module=report'.$search.'";</script>';
+		echo '<script type = "text/javascript">	window.print();window.location.href = "?module=reppaymentmo'.$sby.$search.'";</script>';
 	}
 ?>
