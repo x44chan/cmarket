@@ -1,3 +1,14 @@
+table .header-fixed {
+  position: fixed;
+  top: 50px;
+  /*left: 0;*/
+  /*right: 0;*/
+  z-index: 1020; /* 10 less than .navbar-fixed to prevent any overlap */
+
+}
+#thead{
+  background-color: #eaeaea;
+}
 body{
 	margin: 0px;
 	padding: 0px;

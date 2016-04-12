@@ -1061,24 +1061,26 @@
 			</h4></i>
 		</div>
 	</div>
-	<table class="table table-responsive" style="overflow-x: auto;">
-		<thead>
-			<th>OR #</th>
-			<th>Store Owner</th>
-			<th>M.FEE</th>
-			<th>MONTH</th>
-			<th>E.BILL</th>
-			<th>MONTH</th>
-			<th>W.BILL</th>
-			<th>MONTH</th>
-			<th>MC</th>
-			<th>BT/SR</th>
-			<th>AM</th>
-			<th>PM</th>
-			<th>TF</th>
-			<th>RF</th>
-			<th>G</th>
-			<th>TCT</th>
+	<table class='table table-bordered table-fixed-header'>
+        <thead class='header' id = "thead">
+			<tr>
+				<th>OR #</th>
+				<th>Store Owner</th>
+				<th>M.FEE</th>
+				<th>MONTH</th>
+				<th>E.BILL</th>
+				<th>MONTH</th>
+				<th>W.BILL</th>
+				<th>MONTH</th>
+				<th>MC</th>
+				<th>BT/SR</th>
+				<th>AM</th>
+				<th>PM</th>
+				<th>TF</th>
+				<th>RF</th>
+				<th>G</th>
+				<th>TCT</th>
+			</tr>
 		</thead>
 		<tbody>
 			<tr><td colspan = "16"><hr></td></tr>
@@ -1203,9 +1205,6 @@
 				echo '<td>'.$tct.'</td>';
 				echo '</tr>';
 			}
-			
-			
-
 		}
 	}else{
 		echo '<tr><td colspan = 16><h4><i>No Record Found</i></h4></td></tr>';
@@ -1231,23 +1230,22 @@
 	$cttotal = 0;
 	if($restct->num_rows > 0){
 		echo '<tr><td colspan = 16><hr><h4><i>Cash Ticket Collection</i></h4></td></tr>';
-		echo '<tr><th colspan = 7>Collector</th><th colspan = 6>Amount</th></tr>';
+		echo '<tr><td colspan = 7><b>Collector</td><td colspan = 8 style = "text-align: center;"><b>Amount</td><td></td></tr>';
 		while ($ct = $restct->fetch_assoc()) {
 			echo '<tr>';
 				echo '<td colspan = 7>' . $ct['lname'] . ', ' . $ct['fname'] . '</td>';
 				echo '<td></td>';
-				echo '<td colspan = 4>₱ ' . number_format($ct['amount'],2) . '</td>';
+				echo '<td colspan = 4>₱ ' . number_format($ct['amount'],2) . '</td><td colspan = 4></td>';
 			echo '</tr>';
 			$cttotal += $ct['amount'];
 		}
-		echo '<tr><td colspan = 7></td><td><br><b>Total:</td><td colspan = 4><hr>₱ '.number_format($cttotal,2).'</tr>';
+		echo '<tr><td colspan = 7></td><td><br><b>Total:</td><td colspan = 4><hr>₱ '.number_format($cttotal,2).'</td><td colspan = 4></td></tr>';
 	}
 	echo '<tr><td colspan = 16><hr></td><tr>';
-	echo '<tr><td colspan = "8"><b>Total Collection: </b></td><td colspan = 4>₱ ' . number_format($total+$cttotal,2) . '</td></tr>';
+	echo '<tr><td colspan = "8"><b>Total Collection: </b></td><td colspan = 4>₱ ' . number_format($total+$cttotal,2) . '</td><td colspan = 4></td></tr>';
 ?>	
-	</tbody>
-	</table>
 </div>
+
 <?php
 	}
 ?>
