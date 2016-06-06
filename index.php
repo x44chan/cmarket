@@ -1,9 +1,9 @@
 <?php
-	session_start();
+    session_start();
     include 'config/title.php';
-	include 'config/header.php';
-    include 'config/conf.php';	
-	if(isset($_SESSION['acc_id'])){
+    include 'config/header.php';
+    include 'config/conf.php';
+    if(isset($_SESSION['acc_id'])){
 ?>
 <!-- Static navbar -->
     <nav class="navbar navbar-default navbar-fixed-top">
