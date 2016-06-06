@@ -15,8 +15,8 @@ $(document).ready( function () {
 });
 
 $(window).load(function(){
-  $(".container-fluid").hide().fadeIn(); 
   $(".highcharts-button").hide();
+  $(".highcharts-contextmenu").hide();
 });
 
 //sticky thead

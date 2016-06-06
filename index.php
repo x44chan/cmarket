@@ -72,7 +72,7 @@
       </div>
     </nav>
     <!-- Page Content -->
-    <div class = "container-fluid" style="margin-top: 60px; display: hidden;">
+    <div class = "container-fluid" id = "tohide" style="margin-top: 60px; visibility: hidden;">
       <?php
       	include 'ajax/func.php';
       	if(!isset($_GET['module'])){
@@ -82,19 +82,30 @@
       	}else{
       		include 'modules/'.$_GET['module'].'.php';
       	}	
+        /*  Foldering
+            include 'ajax/func.php';
+            if(!isset($_GET['action'])){
+                $acc = 'index.php';
+            }else{
+                $acc = $_GET['action'].'.php';
+            }
+            if(!isset($_GET['module'])){
+              include 'modules/main.php';
+            }elseif(!file_exists('modules/'.$_GET['module'])){
+                include 'config/404.php';
+            }else{
+                include 'modules/'.$_GET['module'].'/'.$acc;
+            }
+        */
      }elseif((isset($_GET['module']) && $_GET['module'] == 'login' && !isset($_SESSION['acc_id'])) || (!isset($_SESSION['acc_id']))){
       ?>
 <style type="text/css">
 	.table {border-bottom:0px !important;}
 	.table th, .table td {border: 0px !important;}
 </style>
-		<form role = "form" action = "" method = "post">	
+		<h3 align="center"><i><span class="icon-lock"></span><i class="fa fa-desktop"></i> Login Form</i></h3>
+		<form role = "form" action = "" method = "post" id = "tohide" style="display: none;">	
 			<table align = "center" class = "table form-horizontal" style = "margin-top: 0px; width: 800px;" >
-				<thead>
-					<tr style = "border: none;">
-						<td colspan = 2 align = center><h3><i><span class="icon-lock"></span><i class="fa fa-desktop"></i> Login Form</i></h3></td> 
-					</tr>
-				</thead>
 				<tr>
 					<td><label for = "uname"><span class="icon-user"></span>  Username: </label><input <?php if(isset($_POST['uname'])){ echo 'value ="' . $_POST['uname'] . '"'; }else{ echo 'autofocus ';}?>placeholder = "Enter Username" id = "uname" title = "Input your username." type = "text" class = "form-control input-sm" required name = "uname"/></td>
 				
@@ -140,3 +151,11 @@
 }
 include('config/footer.php');
 ?>
+<script>
+    NProgress.start();
+    $("#b-0").click(function() { NProgress.start(); });
+    $("#b-40").click(function() { NProgress.set(0.4); });
+    $("#b-inc").click(function() { NProgress.inc(); });
+    setTimeout(function() { NProgress.done(); $("#tohide").css('visibility','visible').hide().fadeIn('slow'); }, 1000);
+    $("#b-100").click(function() { NProgress.done(); });	
+</script>

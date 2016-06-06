@@ -9,6 +9,7 @@
 		<link rel="stylesheet" href="css/bootstrap-theme.min.css">
 		<link rel="stylesheet" href="css/bootstrap.min.css">
 		<link rel="stylesheet" href="css/css.css">
+		<link rel="stylesheet" href="css/nprogress.css">
 		
 		<!-- jQuery library -->
 		<script src="js/jquery.min.js"></script>
@@ -19,6 +20,7 @@
 		<link rel="stylesheet" type="text/css" href="css/datatables.min.css"/> 
 		<script type="text/javascript" src="js/datatables.min.js"></script>		
 		<script type="text/javascript" src="js/highcharts.js"></script>
-		<script type="text/javascript" src="js/exporting.js"></script>
+		<script type="text/javascript" src="js/exporting.js"></script>		
+		<script type="text/javascript" src="js/nprogress.js"></script>
 	</head>
 	<body>

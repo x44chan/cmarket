@@ -127,7 +127,7 @@
 	$result = $conn->query($sql);	
 	if($result->num_rows > 0){
 		$data = $conn->query($sum)->fetch_assoc();
-		echo '<div class = "container-fluid" style = "text-align: center; margin: 10px 20px" id = "reportg">
+		echo '<div class = "container-fluid" style = "text-align: left; margin: 10px 20px" id = "reportg">
 			<div class = "row">
 				<div class = "col-xs-6" align = "left">
 					<u><i><h4>Store List</h4></i></u>					

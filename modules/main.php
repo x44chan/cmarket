@@ -3,7 +3,7 @@
 	$result = $conn->query($sql);		
 	if($result->num_rows > 0){
 ?>
-<div class="container-fluid" style="padding: 5px 10px; text-align: center; <?php if(!isset($_GET['print'])){ ?> margin-top: 51px; <?php } ?>" id = "reportg">
+<div class="container-fluid" style="padding: 5px 10px; text-align: left; <?php if(!isset($_GET['print'])){ ?> margin-top: 51px; <?php } ?>" id = "reportg">
 	<?php if(!isset($_GET['print'])){ ?> <nav class="navbar navbar-fixed-top" style = "margin-top: 51px; z-index: 900;">	<?php } ?>
     	<div class="container-fluid" style="background: #eaeaea;">
 	     	<div class = "row" style=" background: #fff;">
