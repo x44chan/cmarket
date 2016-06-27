@@ -1,5 +1,75 @@
-
-<div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+<style type="text/css">
+    #reports{
+        font-size: 12px;
+    }
+    #reports label, #reports label{
+        font-size: 13px;
+    }
+    th{
+        text-align: center;
+    }
+    @media print {
+        .highcharts-button{
+            visibility: hidden;
+        }
+        @page{ size: A4 landscape;}
+        #reportg #red {
+            color: red !important;
+        }
+        #reportg #green{
+            color: green !important;
+        }
+        #reportg h4{
+            font-size: 15px;
+        }
+        #datepr{
+            margin-top: 25px;
+        }
+        #reportg, #reportg * {
+            visibility: visible;
+            height: 100%;
+        }
+        #reportg th{
+            font-size: 12px;
+            width: 0;
+            border-left: 1px solid black !important;
+            border-top: 1px solid black !important;
+            border-right: 1px solid black !important;
+            border-bottom: 1px solid black !important;
+        } 
+        #reportg td{
+            font-size: 12px;
+            bottom: 0;
+            padding: 3.5px;
+            border-left: 1px solid black !important;
+            border-top: 1px solid black !important;
+            border-right: 1px solid black !important;
+            border-bottom: 1px solid black !important;max-width: 210px;
+        }
+        #width{
+            min-width: 90px;
+        }
+        #reportg p{
+            font-size: 11px;
+        }
+        #totss{
+            font-size: 13px;
+        }
+        #reportg {
+            position: absolute;
+            left: 0;
+            top: 0;
+            right: 0;
+        }
+        #backs{
+            display: none;
+        }
+    }
+     #tbl td, #tbl th{
+        border-bottom: 1px solid !important;
+     }
+</style>
+<div id="reportg" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
     <?php
         $jan = 0; $feb = 0; $mar = 0; $apr = 0; $may = 0; $jun = 0; $jul = 0; $aug = 0; $sep = 0; $oct = 0; $nov = 0; $dec = 0;
         if(!isset($_GET['year'])){
@@ -57,7 +127,7 @@
 ?>
 <script type="text/javascript">
 	$(function () {
-    $('#container').highcharts({
+    $('#reportg').highcharts({
         chart: {
             type: 'column'
         },
@@ -88,6 +158,11 @@
             min: 0,
             title: {
                 text: '₱esos'
+            },
+            labels: {
+                formatter: function () {
+                    return Highcharts.numberFormat(this.value,0);
+                }
             }
         },
         tooltip: {

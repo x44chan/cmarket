@@ -9,10 +9,7 @@
 		text-align: center;
 	}
 	@media print {
-		body * {
-	    	visibility: hidden;
-	    
-	  	}
+		
 	  	@page{ size: A4 landscape;}
 	  	#reportg #red {
 	  		color: red !important;
@@ -26,8 +23,24 @@
 	  	#datepr{
 	  		margin-top: 25px;
 	  	}
+	  	<?php if(isset($_GET['print'])){ ?>
 	  	#reportg, #reportg * {
 	    	visibility: visible;
+	 	}
+	 	body * {
+	    	visibility: hidden;
+	    
+	  	}
+	 	<?php }else{ ?>
+	 	#reportg, #reportg * {
+	    	visibility: hidden;
+	 	}
+	 	<?php } ?>
+	 	.xcont{
+	 		visibility: visible;
+	 	}
+	 	.highcharts-button{
+	 		visibility: hidden;
 	 	}
 		#reportg th{
 	  		font-size: 12px;
@@ -72,9 +85,10 @@
 <div class="container-fluid">
 	<div class="col-xs-12 form-inline" align="right">
 		<form action = "" method="get">
-			<input type = 'hidden' name = "module" value = "report">
+			<input type = 'hidden' name = "module" value = "repsum">
+			<label>Starting Year: </label>
 			<select class="form-control input-sm" name = "year" required/>
-				<option <?php if(isset($_GET['year']) && $_GET['year'] == date("Y")){ echo ' selected '; } ?> value="<?php echo date('Y');?>"> <?php echo date('Y'); $year = date("Y");?> </option>
+				<option <?php if(isset($_GET['year']) && $_GET['year'] == date("Y")){ echo ' selected '; } ?> value="<?php echo date('Y');?>"> <?php echo date('Y'); $year = 2016;?> </option>
 				<?php
 					for($i = date("Y"); $i >= 2016; $i--){
 						if($i == date("Y")){
@@ -92,16 +106,22 @@
 				?>
 			</select>
 			<button class="btn btn-primary btn-sm"><span class = "icon-search"></span> Search </button>
-			<a href="?module=report" class="btn btn-danger btn-sm"><span class = "icon-spinner11"></span> Clear </a>
-			<a href = "?module=report<?php if(isset($_GET['year'])){ echo '&year=' . $_GET['year'];}?>&print"class="btn btn-success btn-sm"><span class = "icon-printer"></span> Print Report</a>
-		</form>		
+			<a href="?module=repsum" class="btn btn-danger btn-sm"><span class = "icon-spinner11"></span> Clear </a>
+			<a href = "?module=repsum<?php if(isset($_GET['year'])){ echo '&year=' . $_GET['year'];}?>&print"class="btn btn-success btn-sm"><span class = "icon-printer"></span> Print Report</a>
+		</form>			
 	</div>
 </div>
 <?php
-	if(isset($_GET['year']) && $_GET['year'] != date('Y')){
-		$repdate = 'For the Year of <b>'. mysqli_real_escape_string($conn, $_GET['year']);
+	if(isset($_GET['year'])  && $_GET['year'] <= date("Y")){
+		if($_GET['year'] != date('Y')){
+			$repdate = 'For the Year of <b>'. mysqli_real_escape_string($conn, $_GET['year']);
+		}else{
+			$repdate = 'as of <b>' . date ("F Y");
+		}
+		$year = mysqli_real_escape_string($conn, $_GET['year']);
 	}else{
-		$repdate = 'For the Month of <b>' . date ("F Y");
+		$repdate = 'as of <b>' . date ("F Y");
+		$year = '2016';	
 	}
 ?>
 <div class="container-fluid" id = "reportg">
@@ -111,7 +131,7 @@
 			<p style="margin-bottom: -.5px;">Province of Batangas</p>
 			<p>Municipality of <b>Calaca</b></p>
 			<p><b>OFFICE OF THE MARKET ADMINISTRATOR</b></p>
-			<p style="margin-bottom: -.5px;"><b>CASH COLLECTION REPORT</b></p>
+			<p style="margin-bottom: -.5px;"><b>CASH COLLECTION REPORT (YEARLY SUMMARY)</b></p>
 			<p><?php echo $repdate;?></b></p>
 		</div>
 	</div>
@@ -121,60 +141,56 @@
 			<?php
 				$d = 0;
 				for($i = 1; $i <= 12; $i++){
-					echo '<th>' . date("F", strtotime("+".$d." months", strtotime('Y-'.$i.'-d'))) . '</th>';
+					echo '<th>' . ($year + $d)  . '</th>';
+					$arryear[] = ($year + $d);
 					$d += 1;
 				}
 			?>
-			<th>Total</th>
+			<th style="display: none;">Total</th>
 		</thead>
 		<tbody>
 			<?php
 				$jan = 0; $feb = 0; $mar = 0; $apr = 0; $may = 0; $jun = 0; $jul = 0; $aug = 0; $sep = 0; $oct = 0; $nov = 0; $dec = 0;
-				if(!isset($_GET['year'])){
-					$year = date("Y");	
-				}else{
-					$year = mysqli_real_escape_string($conn, $_GET['year']);
-				}
 				
-				$cticket = "SELECT * FROM `collection` where YEAR(paydate) = '$year' and type = 'Cash Ticket'";
-				$ctres = $conn->query($cticket);
 				$ctjan = 0; $ctfeb = 0; $ctmar = 0; $ctapr = 0; $ctmay = 0; $ctjun = 0; $ctjul = 0; $ctaug = 0; $ctsep = 0; $ctoct = 0; $ctnov = 0; $ctdec = 0; $cttotal = 0;
+				$cticket = "SELECT * FROM `collection` where month(paydate) = '01'";
+				$ctres = $conn->query($cticket);
 				if($ctres->num_rows > 0){
 					while($row = $ctres->fetch_assoc()){
-						if(date("m", strtotime($row['paydate'])) == '01'){
+						if(date("Y", strtotime($row['paydate'])) == $arryear[0]){
 							$ctjan += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '02'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[1]){
 							$ctfeb += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '03'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[2]){
 							$ctmar += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '04'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[3]){
 							$ctapr += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '05'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[4]){
 							$ctmay += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '06'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[5]){
 							$ctjun += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '07'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[6]){
 							$ctjul += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '08'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[7]){
 							$ctaug += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '09'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[8]){
 							$ctsep += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '10'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[9]){
 							$ctoct += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '11'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[10]){
 							$ctnov += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '12'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[11]){
 							$ctdec += $row['amount'];
 						}
 					}
@@ -184,7 +200,7 @@
 				}
 			?>
 			<tr>
-				<td> Cash Ticket </td>
+				<td> January </td>
 				<td> <?php if($ctjan > 0){ echo number_format($ctjan,2); } else { echo ' - '; }?> </td>
 				<td> <?php if($ctfeb > 0){ echo number_format($ctfeb,2); } else { echo ' - '; }?> </td>
 				<td> <?php if($ctmar > 0){ echo number_format($ctmar,2); } else { echo ' - '; }?> </td>
@@ -197,48 +213,48 @@
 				<td> <?php if($ctoct > 0){ echo number_format($ctoct,2); } else { echo ' - '; }?> </td>
 				<td> <?php if($ctnov > 0){ echo number_format($ctnov,2); } else { echo ' - '; }?> </td>
 				<td> <?php if($ctdec > 0){ echo number_format($ctdec,2); } else { echo ' - '; }?> </td>
-				<td> <b><?php if($cttotal > 0){ echo number_format($cttotal,2); } else { echo ' - '; }?> </td>
+				<td style="display: none;"> <b><?php if($cttotal > 0){ echo number_format($cttotal,2); } else { echo ' - '; }?> </td>
 			</tr>
 			<?php
-				$btax = "SELECT * FROM `collection` where YEAR(paydate) = '$year' and type = 'Business Tax'";
+				$btax = "SELECT * FROM `collection` where month(paydate) = '02'";
 				$btres = $conn->query($btax);
 				$btjan = 0; $btfeb = 0; $btmar = 0; $btapr = 0; $btmay = 0; $btjun = 0; $btjul = 0; $btaug = 0; $btsep = 0; $btoct = 0; $btnov = 0; $btdec = 0; $bttotal = 0;
 				if($btres->num_rows > 0){
 					while($row = $btres->fetch_assoc()){
-						if(date("m", strtotime($row['paydate'])) == '01'){
+						if(date("Y", strtotime($row['paydate'])) == $arryear[0]){
 							$btjan += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '02'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[1]){
 							$btfeb += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '03'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[2]){
 							$btmar += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '04'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[3]){
 							$btapr += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '05'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[4]){
 							$btmay += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '06'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[5]){
 							$btjun += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '07'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[6]){
 							$btjul += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '08'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[7]){
 							$btaug += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '09'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[8]){
 							$btsep += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '10'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[9]){
 							$btoct += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '11'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[10]){
 							$btnov += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '12'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[11]){
 							$btdec += $row['amount'];
 						}
 					}
@@ -248,7 +264,7 @@
 				}
 			?>
 			<tr>
-				<td> Business Tax </td>
+				<td> February </td>
 				<td> <?php if($btjan > 0){ echo number_format($btjan,2); } else { echo ' - '; }?> </td>
 				<td> <?php if($btfeb > 0){ echo number_format($btfeb,2); } else { echo ' - '; }?> </td>
 				<td> <?php if($btmar > 0){ echo number_format($btmar,2); } else { echo ' - '; }?> </td>
@@ -261,48 +277,48 @@
 				<td> <?php if($btoct > 0){ echo number_format($btoct,2); } else { echo ' - '; }?> </td>
 				<td> <?php if($btnov > 0){ echo number_format($btnov,2); } else { echo ' - '; }?> </td>
 				<td> <?php if($btdec > 0){ echo number_format($btdec,2); } else { echo ' - '; }?> </td>
-				<td> <b><?php if($bttotal > 0){ echo number_format($bttotal,2); } else { echo ' - '; }?> </td>
+				<td style="display: none;"> <b><?php if($bttotal > 0){ echo number_format($bttotal,2); } else { echo ' - '; }?> </td>
 			</tr>
 			<?php
-				$ebax = "SELECT * FROM `collection` where YEAR(paydate) = '$year' and type = 'Electric Bill'";
+				$ebax = "SELECT * FROM `collection` where month(paydate) = '03'";
 				$ebres = $conn->query($ebax);
 				$ebjan = 0; $ebfeb = 0; $ebmar = 0; $ebapr = 0; $ebmay = 0; $ebjun = 0; $ebjul = 0; $ebaug = 0; $ebsep = 0; $eboct = 0; $ebnov = 0; $ebdec = 0; $ebtotal = 0;
 				if($ebres->num_rows > 0){
 					while($row = $ebres->fetch_assoc()){
-						if(date("m", strtotime($row['paydate'])) == '01'){
+						if(date("Y", strtotime($row['paydate'])) == $arryear[0]){
 							$ebjan += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '02'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[1]){
 							$ebfeb += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '03'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[2]){
 							$ebmar += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '04'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[3]){
 							$ebapr += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '05'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[4]){
 							$ebmay += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '06'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[5]){
 							$ebjun += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '07'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[6]){
 							$ebjul += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '08'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[7]){
 							$ebaug += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '09'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[8]){
 							$ebsep += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '10'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[9]){
 							$eboct += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '11'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[10]){
 							$ebnov += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '12'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[11]){
 							$ebdec += $row['amount'];
 						}
 					}
@@ -312,7 +328,7 @@
 				}
 			?>
 			<tr>
-				<td> Electric Bill </td>
+				<td> March </td>
 				<td> <?php if($ebjan > 0){ echo number_format($ebjan,2); } else { echo ' - '; }?> </td>
 				<td> <?php if($ebfeb > 0){ echo number_format($ebfeb,2); } else { echo ' - '; }?> </td>
 				<td> <?php if($ebmar > 0){ echo number_format($ebmar,2); } else { echo ' - '; }?> </td>
@@ -325,48 +341,48 @@
 				<td> <?php if($eboct > 0){ echo number_format($eboct,2); } else { echo ' - '; }?> </td>
 				<td> <?php if($ebnov > 0){ echo number_format($ebnov,2); } else { echo ' - '; }?> </td>
 				<td> <?php if($ebdec > 0){ echo number_format($ebdec,2); } else { echo ' - '; }?> </td>
-				<td> <b><?php if($ebtotal > 0){ echo number_format($ebtotal,2); } else { echo ' - '; }?> </td>
+				<td style="display: none;"> <b><?php if($ebtotal > 0){ echo number_format($ebtotal,2); } else { echo ' - '; }?> </td>
 			</tr>
 			<?php
-				$rfax = "SELECT * FROM `collection` where YEAR(paydate) = '$year' and type = 'Renewal Fee'";
+				$rfax = "SELECT * FROM `collection` where month(paydate) = '04'";
 				$rfres = $conn->query($rfax);
 				$rfjan = 0; $rffeb = 0; $rfmar = 0; $rfapr = 0; $rfmay = 0; $rfjun = 0; $rfjul = 0; $rfaug = 0; $rfsep = 0; $rfoct = 0; $rfnov = 0; $rfdec = 0; $rftotal = 0;
 				if($rfres->num_rows > 0){
 					while($row = $rfres->fetch_assoc()){
-						if(date("m", strtotime($row['paydate'])) == '01'){
+						if(date("Y", strtotime($row['paydate'])) == $arryear[0]){
 							$rfjan += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '02'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[1]){
 							$rffeb += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '03'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[2]){
 							$rfmar += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '04'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[3]){
 							$rfapr += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '05'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[4]){
 							$rfmay += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '06'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[5]){
 							$rfjun += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '07'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[6]){
 							$rfjul += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '08'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[7]){
 							$rfaug += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '09'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[8]){
 							$rfsep += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '10'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[9]){
 							$rfoct += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '11'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[10]){
 							$rfnov += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '12'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[11]){
 							$rfdec += $row['amount'];
 						}
 					}
@@ -376,7 +392,7 @@
 				}
 			?>
 			<tr>
-				<td> Renewal Fee </td>
+				<td> April </td>
 				<td> <?php if($rfjan > 0){ echo number_format($rfjan,2); } else { echo ' - '; }?> </td>
 				<td> <?php if($rffeb > 0){ echo number_format($rffeb,2); } else { echo ' - '; }?> </td>
 				<td> <?php if($rfmar > 0){ echo number_format($rfmar,2); } else { echo ' - '; }?> </td>
@@ -389,48 +405,48 @@
 				<td> <?php if($rfoct > 0){ echo number_format($rfoct,2); } else { echo ' - '; }?> </td>
 				<td> <?php if($rfnov > 0){ echo number_format($rfnov,2); } else { echo ' - '; }?> </td>
 				<td> <?php if($rfdec > 0){ echo number_format($rfdec,2); } else { echo ' - '; }?> </td>
-				<td> <b><?php if($rftotal > 0){ echo number_format($rftotal,2	); } else { echo ' - '; }?> </td>
+				<td style="display: none;"> <b><?php if($rftotal > 0){ echo number_format($rftotal,2	); } else { echo ' - '; }?> </td>
 			</tr>
 			<?php
-				$mfax = "SELECT * FROM `collection` where YEAR(paydate) = '$year' and type = 'Market Fee'";
+				$mfax = "SELECT * FROM `collection` where month(paydate) = '05'";
 				$mfres = $conn->query($mfax);
 				$mfjan = 0; $mffeb = 0; $mfmar = 0; $mfapr = 0; $mfmay = 0; $mfjun = 0; $mfjul = 0; $mfaug = 0; $mfsep = 0; $mfoct = 0; $mfnov = 0; $mfdec = 0; $mftotal = 0;
 				if($mfres->num_rows > 0){
 					while($row = $mfres->fetch_assoc()){
-						if(date("m", strtotime($row['paydate'])) == '01'){
+						if(date("Y", strtotime($row['paydate'])) == $arryear[0]){
 							$mfjan += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '02'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[1]){
 							$mffeb += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '03'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[2]){
 							$mfmar += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '04'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[3]){
 							$mfapr += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '05'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[4]){
 							$mfmay += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '06'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[5]){
 							$mfjun += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '07'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[6]){
 							$mfjul += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '08'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[7]){
 							$mfaug += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '09'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[8]){
 							$mfsep += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '10'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[9]){
 							$mfoct += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '11'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[10]){
 							$mfnov += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '12'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[11]){
 							$mfdec += $row['amount'];
 						}
 					}
@@ -440,7 +456,7 @@
 				}
 			?>
 			<tr>
-				<td> Market Fee </td>
+				<td> May </td>
 				<td> <?php if($mfjan > 0){ echo number_format($mfjan,2); } else { echo ' - '; }?> </td>
 				<td> <?php if($mffeb > 0){ echo number_format($mffeb,2); } else { echo ' - '; }?> </td>
 				<td> <?php if($mfmar > 0){ echo number_format($mfmar,2); } else { echo ' - '; }?> </td>
@@ -453,48 +469,48 @@
 				<td> <?php if($mfoct > 0){ echo number_format($mfoct,2); } else { echo ' - '; }?> </td>
 				<td> <?php if($mfnov > 0){ echo number_format($mfnov,2); } else { echo ' - '; }?> </td>
 				<td> <?php if($mfdec > 0){ echo number_format($mfdec,2); } else { echo ' - '; }?> </td>
-				<td> <b><?php if($mftotal > 0){ echo number_format($mftotal,2); } else { echo ' - '; }?> </td>
+				<td style="display: none;"> <b><?php if($mftotal > 0){ echo number_format($mftotal,2); } else { echo ' - '; }?> </td>
 			</tr>
 			<?php
-				$mcax = "SELECT * FROM `collection` where YEAR(paydate) = '$year' and type = 'Market Clearance'";
+				$mcax = "SELECT * FROM `collection` where month(paydate) = '06'";
 				$mcres = $conn->query($mcax);
 				$mcjan = 0; $mcfeb = 0; $mcmar = 0; $mcapr = 0; $mcmay = 0; $mcjun = 0; $mcjul = 0; $mcaug = 0; $mcsep = 0; $mcoct = 0; $mcnov = 0; $mcdec = 0; $mctotal = 0;
 				if($mcres->num_rows > 0){
 					while($row = $mcres->fetch_assoc()){
-						if(date("m", strtotime($row['paydate'])) == '01'){
+						if(date("Y", strtotime($row['paydate'])) == $arryear[0]){
 							$mcjan += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '02'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[1]){
 							$mcfeb += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '03'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[2]){
 							$mcmar += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '04'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[3]){
 							$mcapr += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '05'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[4]){
 							$mcmay += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '06'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[5]){
 							$mcjun += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '07'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[6]){
 							$mcjul += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '08'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[7]){
 							$mcaug += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '09'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[8]){
 							$mcsep += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '10'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[9]){
 							$mcoct += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '11'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[10]){
 							$mcnov += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '12'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[11]){
 							$mcdec += $row['amount'];
 						}
 					}
@@ -504,7 +520,7 @@
 				}
 			?>
 			<tr>
-				<td> Market Clearance </td>
+				<td> June </td>
 				<td> <?php if($mcjan > 0){ echo number_format($mcjan,2); } else { echo ' - '; }?> </td>
 				<td> <?php if($mcfeb > 0){ echo number_format($mcfeb,2); } else { echo ' - '; }?> </td>
 				<td> <?php if($mcmar > 0){ echo number_format($mcmar,2); } else { echo ' - '; }?> </td>
@@ -517,48 +533,48 @@
 				<td> <?php if($mcoct > 0){ echo number_format($mcoct,2); } else { echo ' - '; }?> </td>
 				<td> <?php if($mcnov > 0){ echo number_format($mcnov,2); } else { echo ' - '; }?> </td>
 				<td> <?php if($mcdec > 0){ echo number_format($mcdec,2); } else { echo ' - '; }?> </td>
-				<td> <b><?php if($mctotal > 0){ echo number_format($mctotal,2); } else { echo ' - '; }?> </td>
+				<td style="display: none;"> <b><?php if($mctotal > 0){ echo number_format($mctotal,2); } else { echo ' - '; }?> </td>
 			</tr>
 			<?php
-				$amax = "SELECT * FROM `collection` where YEAR(paydate) = '$year' and type = 'Anti Mortem'";
+				$amax = "SELECT * FROM `collection` where month(paydate) = '07'";
 				$amres = $conn->query($amax);
 				$amjan = 0; $amfeb = 0; $ammar = 0; $amapr = 0; $ammay = 0; $amjun = 0; $amjul = 0; $amaug = 0; $amsep = 0; $amoct = 0; $amnov = 0; $amdec = 0; $amtotal = 0;
 				if($amres->num_rows > 0){
 					while($row = $amres->fetch_assoc()){
-						if(date("m", strtotime($row['paydate'])) == '01'){
+						if(date("Y", strtotime($row['paydate'])) == $arryear[0]){
 							$amjan += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '02'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[1]){
 							$amfeb += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '03'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[2]){
 							$ammar += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '04'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[3]){
 							$amapr += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '05'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[4]){
 							$ammay += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '06'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[5]){
 							$amjun += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '07'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[6]){
 							$amjul += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '08'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[7]){
 							$amaug += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '09'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[8]){
 							$amsep += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '10'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[9]){
 							$amoct += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '11'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[10]){
 							$amnov += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '12'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[11]){
 							$amdec += $row['amount'];
 						}
 					}
@@ -568,7 +584,7 @@
 				}
 			?>
 			<tr>
-				<td> Anti - Mortem </td>
+				<td> July </td>
 				<td> <?php if($amjan > 0){ echo number_format($amjan,2); } else { echo ' - '; }?> </td>
 				<td> <?php if($amfeb > 0){ echo number_format($amfeb,2); } else { echo ' - '; }?> </td>
 				<td> <?php if($ammar > 0){ echo number_format($ammar,2); } else { echo ' - '; }?> </td>
@@ -581,48 +597,48 @@
 				<td> <?php if($amoct > 0){ echo number_format($amoct,2); } else { echo ' - '; }?> </td>
 				<td> <?php if($amnov > 0){ echo number_format($amnov,2); } else { echo ' - '; }?> </td>
 				<td> <?php if($amdec > 0){ echo number_format($amdec,2); } else { echo ' - '; }?> </td>
-				<td> <b><?php if($amtotal > 0){ echo number_format($amtotal,2); } else { echo ' - '; }?> </td>
+				<td style="display: none;"> <b><?php if($amtotal > 0){ echo number_format($amtotal,2); } else { echo ' - '; }?> </td>
 			</tr>
 			<?php
-				$pmax = "SELECT * FROM `collection` where YEAR(paydate) = '$year' and type = 'Post Mortem'";
+				$pmax = "SELECT * FROM `collection` where month(paydate) = '08'";
 				$pmres = $conn->query($pmax);
 				$pmjan = 0; $pmfeb = 0; $pmmar = 0; $pmapr = 0; $pmmay = 0; $pmjun = 0; $pmjul = 0; $pmaug = 0; $pmsep = 0; $pmoct = 0; $pmnov = 0; $pmdec = 0; $pmtotal = 0;
 				if($pmres->num_rows > 0){
 					while($row = $pmres->fetch_assoc()){
-						if(date("m", strtotime($row['paydate'])) == '01'){
+						if(date("Y", strtotime($row['paydate'])) == $arryear[0]){
 							$pmjan += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '02'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[1]){
 							$pmfeb += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '03'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[2]){
 							$pmmar += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '04'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[3]){
 							$pmapr += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '05'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[4]){
 							$pmmay += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '06'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[5]){
 							$pmjun += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '07'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[6]){
 							$pmjul += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '08'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[7]){
 							$pmaug += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '09'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[8]){
 							$pmsep += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '10'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[9]){
 							$pmoct += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '11'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[10]){
 							$pmnov += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '12'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[11]){
 							$pmdec += $row['amount'];
 						}
 					}
@@ -632,7 +648,7 @@
 				}
 			?>
 			<tr>
-				<td> Post - Mortem </td>
+				<td> August </td>
 				<td> <?php if($pmjan > 0){ echo number_format($pmjan,2); } else { echo ' - '; }?> </td>
 				<td> <?php if($pmfeb > 0){ echo number_format($pmfeb,2); } else { echo ' - '; }?> </td>
 				<td> <?php if($pmmar > 0){ echo number_format($pmmar,2); } else { echo ' - '; }?> </td>
@@ -645,48 +661,48 @@
 				<td> <?php if($pmoct > 0){ echo number_format($pmoct,2); } else { echo ' - '; }?> </td>
 				<td> <?php if($pmnov > 0){ echo number_format($pmnov,2); } else { echo ' - '; }?> </td>
 				<td> <?php if($pmdec > 0){ echo number_format($pmdec,2); } else { echo ' - '; }?> </td>
-				<td> <b><?php if($pmtotal > 0){ echo number_format($pmtotal,2); } else { echo ' - '; }?> </td>
+				<td style="display: none;"> <b><?php if($pmtotal > 0){ echo number_format($pmtotal,2); } else { echo ' - '; }?> </td>
 			</tr>
 			<?php
-				$gwax = "SELECT * FROM `collection` where YEAR(paydate) = '$year' and type = 'Goodwill'";
+				$gwax = "SELECT * FROM `collection` where month(paydate) = '09'";
 				$gwres = $conn->query($gwax);
 				$gwjan = 0; $gwfeb = 0; $gwmar = 0; $gwapr = 0; $gwmay = 0; $gwjun = 0; $gwjul = 0; $gwaug = 0; $gwsep = 0; $gwoct = 0; $gwnov = 0; $gwdec = 0; $gwtotal = 0;
 				if($gwres->num_rows > 0){
 					while($row = $gwres->fetch_assoc()){
-						if(date("m", strtotime($row['paydate'])) == '01'){
+						if(date("Y", strtotime($row['paydate'])) == $arryear[0]){
 							$gwjan += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '02'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[1]){
 							$gwfeb += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '03'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[2]){
 							$gwmar += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '04'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[3]){
 							$gwapr += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '05'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[4]){
 							$gwmay += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '06'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[5]){
 							$gwjun += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '07'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[6]){
 							$gwjul += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '08'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[7]){
 							$gwaug += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '09'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[8]){
 							$gwsep += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '10'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[9]){
 							$gwoct += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '11'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[10]){
 							$gwnov += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '12'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[11]){
 							$gwdec += $row['amount'];
 						}
 					}
@@ -696,7 +712,7 @@
 				}
 			?>
 			<tr>
-				<td> Goodwill </td>
+				<td> September </td>
 				<td> <?php if($gwjan > 0){ echo number_format($gwjan,2); } else { echo ' - '; }?> </td>
 				<td> <?php if($gwfeb > 0){ echo number_format($gwfeb,2); } else { echo ' - '; }?> </td>
 				<td> <?php if($gwmar > 0){ echo number_format($gwmar,2); } else { echo ' - '; }?> </td>
@@ -709,48 +725,48 @@
 				<td> <?php if($gwoct > 0){ echo number_format($gwoct,2); } else { echo ' - '; }?> </td>
 				<td> <?php if($gwnov > 0){ echo number_format($gwnov,2); } else { echo ' - '; }?> </td>
 				<td> <?php if($gwdec > 0){ echo number_format($gwdec,2); } else { echo ' - '; }?> </td>
-				<td> <b><?php if($gwtotal > 0){ echo number_format($gwtotal,2); } else { echo ' - '; }?> </td>
+				<td style="display: none;"> <b><?php if($gwtotal > 0){ echo number_format($gwtotal,2); } else { echo ' - '; }?> </td>
 			</tr>
 			<?php
-				$tfax = "SELECT * FROM `collection` where YEAR(paydate) = '$year' and type = 'Transfer Fee'";
+				$tfax = "SELECT * FROM `collection` where month(paydate) = '10'";
 				$tfres = $conn->query($tfax);
 				$tfjan = 0; $tffeb = 0; $tfmar = 0; $tfapr = 0; $tfmay = 0; $tfjun = 0; $tfjul = 0; $tfaug = 0; $tfsep = 0; $tfoct = 0; $tfnov = 0; $tfdec = 0; $tftotal = 0;
 				if($tfres->num_rows > 0){
 					while($row = $tfres->fetch_assoc()){
-						if(date("m", strtotime($row['paydate'])) == '01'){
+						if(date("Y", strtotime($row['paydate'])) == $arryear[0]){
 							$tfjan += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '02'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[1]){
 							$tffeb += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '03'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[2]){
 							$tfmar += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '04'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[3]){
 							$tfapr += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '05'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[4]){
 							$tfmay += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '06'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[5]){
 							$tfjun += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '07'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[6]){
 							$tfjul += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '08'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[7]){
 							$tfaug += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '09'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[8]){
 							$tfsep += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '10'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[9]){
 							$tfoct += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '11'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[10]){
 							$tfnov += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '12'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[11]){
 							$tfdec += $row['amount'];
 						}
 					}
@@ -760,7 +776,7 @@
 				}
 			?>
 			<tr>
-				<td> Transfer Fee </td>
+				<td> October </td>
 				<td> <?php if($tfjan > 0){ echo number_format($tfjan,2); } else { echo ' - '; }?> </td>
 				<td> <?php if($tffeb > 0){ echo number_format($tffeb,2); } else { echo ' - '; }?> </td>
 				<td> <?php if($tfmar > 0){ echo number_format($tfmar,2); } else { echo ' - '; }?> </td>
@@ -773,48 +789,48 @@
 				<td> <?php if($tfoct > 0){ echo number_format($tfoct,2); } else { echo ' - '; }?> </td>
 				<td> <?php if($tfnov > 0){ echo number_format($tfnov,2); } else { echo ' - '; }?> </td>
 				<td> <?php if($tfdec > 0){ echo number_format($tfdec,2); } else { echo ' - '; }?> </td>
-				<td> <b><?php if($tftotal > 0){ echo number_format($tftotal,2); } else { echo ' - '; }?> </td>
+				<td style="display: none;"> <b><?php if($tftotal > 0){ echo number_format($tftotal,2); } else { echo ' - '; }?> </td>
 			</tr>
 			<?php
-				$srax = "SELECT * FROM `collection` where YEAR(paydate) = '$year' and type = 'Space Rental'";
+				$srax = "SELECT * FROM `collection` where month(paydate) = '11'";
 				$srres = $conn->query($srax);
 				$srjan = 0; $srfeb = 0; $srmar = 0; $srapr = 0; $srmay = 0; $srjun = 0; $srjul = 0; $sraug = 0; $srsep = 0; $sroct = 0; $srnov = 0; $srdec = 0; $srtotal = 0;
 				if($srres->num_rows > 0){
 					while($row = $srres->fetch_assoc()){
-						if(date("m", strtotime($row['paydate'])) == '01'){
+						if(date("Y", strtotime($row['paydate'])) == $arryear[0]){
 							$srjan += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '02'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[1]){
 							$srfeb += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '03'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[2]){
 							$srmar += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '04'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[3]){
 							$srapr += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '05'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[4]){
 							$srmay += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '06'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[5]){
 							$srjun += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '07'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[6]){
 							$srjul += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '08'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[7]){
 							$sraug += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '09'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[8]){
 							$srsep += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '10'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[9]){
 							$sroct += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '11'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[10]){
 							$srnov += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '12'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[11]){
 							$srdec += $row['amount'];
 						}
 					}
@@ -824,7 +840,7 @@
 				}
 			?>
 			<tr>
-				<td> Space Rental </td>
+				<td> November </td>
 				<td> <?php if($srjan > 0){ echo number_format($srjan,2); } else { echo ' - '; }?> </td>
 				<td> <?php if($srfeb > 0){ echo number_format($srfeb,2); } else { echo ' - '; }?> </td>
 				<td> <?php if($srmar > 0){ echo number_format($srmar,2); } else { echo ' - '; }?> </td>
@@ -837,48 +853,48 @@
 				<td> <?php if($sroct > 0){ echo number_format($sroct,2); } else { echo ' - '; }?> </td>
 				<td> <?php if($srnov > 0){ echo number_format($srnov,2); } else { echo ' - '; }?> </td>
 				<td> <?php if($srdec > 0){ echo number_format($srdec,2); } else { echo ' - '; }?> </td>
-				<td> <b><?php if($srtotal > 0){ echo number_format($srtotal,2); } else { echo ' - '; }?> </td>
+				<td style="display: none;"> <b><?php if($srtotal > 0){ echo number_format($srtotal,2); } else { echo ' - '; }?> </td>
 			</tr>
 			<?php
-				$tctax = "SELECT * FROM `collection` where YEAR(paydate) = '$year' and type = 'TCT'";
+				$tctax = "SELECT * FROM `collection` where month(paydate) = '12'";
 				$tctres = $conn->query($tctax);
 				$tctjan = 0; $tctfeb = 0; $tctmar = 0; $tctapr = 0; $tctmay = 0; $tctjun = 0; $tctjul = 0; $tctaug = 0; $tctsep = 0; $tctoct = 0; $tctnov = 0; $tctdec = 0; $tcttotal = 0;
 				if($tctres->num_rows > 0){
 					while($row = $tctres->fetch_assoc()){
-						if(date("m", strtotime($row['paydate'])) == '01'){
+						if(date("Y", strtotime($row['paydate'])) == $arryear[0]){
 							$tctjan += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '02'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[1]){
 							$tctfeb += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '03'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[2]){
 							$tctmar += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '04'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[3]){
 							$tctapr += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '05'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[4]){
 							$tctmay += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '06'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[5]){
 							$tctjun += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '07'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[6]){
 							$tctjul += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '08'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[7]){
 							$tctaug += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '09'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[8]){
 							$tctsep += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '10'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[9]){
 							$tctoct += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '11'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[10]){
 							$tctnov += $row['amount'];
 						}
-						elseif(date("m", strtotime($row['paydate'])) == '12'){
+						elseif(date("Y", strtotime($row['paydate'])) == $arryear[11]){
 							$tctdec += $row['amount'];
 						}
 					}
@@ -888,7 +904,7 @@
 				}
 			?>
 			<tr>
-				<td> TCT </td>
+				<td> December </td>
 				<td> <?php if($tctjan > 0){ echo number_format($tctjan,2); } else { echo ' - '; }?> </td>
 				<td> <?php if($tctfeb > 0){ echo number_format($tctfeb,2); } else { echo ' - '; }?> </td>
 				<td> <?php if($tctmar > 0){ echo number_format($tctmar,2); } else { echo ' - '; }?> </td>
@@ -901,135 +917,10 @@
 				<td> <?php if($tctoct > 0){ echo number_format($tctoct,2); } else { echo ' - '; }?> </td>
 				<td> <?php if($tctnov > 0){ echo number_format($tctnov,2); } else { echo ' - '; }?> </td>
 				<td> <?php if($tctdec > 0){ echo number_format($tctdec,2); } else { echo ' - '; }?> </td>
-				<td> <b><?php if($tcttotal > 0){ echo number_format($tcttotal,2); } else { echo ' - '; }?> </td>
+				<td style="display: none;"> <b><?php if($tcttotal > 0){ echo number_format($tcttotal,2); } else { echo ' - '; }?> </td>
 			</tr>
-			<?php
-				$wbax = "SELECT * FROM `collection` where YEAR(paydate) = '$year' and type = 'Water Bill'";
-				$wbres = $conn->query($wbax);
-				$wbjan = 0; $wbfeb = 0; $wbmar = 0; $wbapr = 0; $wbmay = 0; $wbjun = 0; $wbjul = 0; $wbaug = 0; $wbsep = 0; $wboct = 0; $wbnov = 0; $wbdec = 0; $wbtotal = 0;
-				if($wbres->num_rows > 0){
-					while($row = $wbres->fetch_assoc()){
-						if(date("m", strtotime($row['paydate'])) == '01'){
-							$wbjan += $row['amount'];
-						}
-						elseif(date("m", strtotime($row['paydate'])) == '02'){
-							$wbfeb += $row['amount'];
-						}
-						elseif(date("m", strtotime($row['paydate'])) == '03'){
-							$wbmar += $row['amount'];
-						}
-						elseif(date("m", strtotime($row['paydate'])) == '04'){
-							$wbapr += $row['amount'];
-						}
-						elseif(date("m", strtotime($row['paydate'])) == '05'){
-							$wbmay += $row['amount'];
-						}
-						elseif(date("m", strtotime($row['paydate'])) == '06'){
-							$wbjun += $row['amount'];
-						}
-						elseif(date("m", strtotime($row['paydate'])) == '07'){
-							$wbjul += $row['amount'];
-						}
-						elseif(date("m", strtotime($row['paydate'])) == '08'){
-							$wbaug += $row['amount'];
-						}
-						elseif(date("m", strtotime($row['paydate'])) == '09'){
-							$wbsep += $row['amount'];
-						}
-						elseif(date("m", strtotime($row['paydate'])) == '10'){
-							$wboct += $row['amount'];
-						}
-						elseif(date("m", strtotime($row['paydate'])) == '11'){
-							$wbnov += $row['amount'];
-						}
-						elseif(date("m", strtotime($row['paydate'])) == '12'){
-							$wbdec += $row['amount'];
-						}
-					}
-					$wbtotal = $wbjan + $wbfeb + $wbmar + $wbapr + $wbmay + $wbjun + $wbjul + $wbaug + $wbsep + $wboct + $wbnov + $wbdec;
-					$jan += $wbjan; $feb += $wbfeb; $mar += $wbmar; $apr += $wbapr; $may += $wbmay; $jun += $wbjun;
-					$jul += $wbjul; $aug += $wbaug; $sep += $wbsep; $oct += $wboct; $nov += $wbnov; $dec += $wbdec;
-				}
-			?>
 			<tr>
-				<td> Water Bill </td>
-				<td> <?php if($wbjan > 0){ echo number_format($wbjan,2); } else { echo ' - '; }?> </td>
-				<td> <?php if($wbfeb > 0){ echo number_format($wbfeb,2); } else { echo ' - '; }?> </td>
-				<td> <?php if($wbmar > 0){ echo number_format($wbmar,2); } else { echo ' - '; }?> </td>
-				<td> <?php if($wbapr > 0){ echo number_format($wbapr,2); } else { echo ' - '; }?> </td>
-				<td> <?php if($wbmay > 0){ echo number_format($wbmay,2); } else { echo ' - '; }?> </td>
-				<td> <?php if($wbjun > 0){ echo number_format($wbjun,2); } else { echo ' - '; }?> </td>
-				<td> <?php if($wbjul > 0){ echo number_format($wbjul,2); } else { echo ' - '; }?> </td>
-				<td> <?php if($wbaug > 0){ echo number_format($wbaug,2); } else { echo ' - '; }?> </td>
-				<td> <?php if($wbsep > 0){ echo number_format($wbsep,2); } else { echo ' - '; }?> </td>
-				<td> <?php if($wboct > 0){ echo number_format($wboct,2); } else { echo ' - '; }?> </td>
-				<td> <?php if($wbnov > 0){ echo number_format($wbnov,2); } else { echo ' - '; }?> </td>
-				<td> <?php if($wbdec > 0){ echo number_format($wbdec,2); } else { echo ' - '; }?> </td>
-				<td> <b><?php if($wbtotal > 0){ echo number_format($wbtotal,2); } else { echo ' - '; }?> </td>
-			</tr>
-			<?php
-				$certax = "SELECT * FROM `collection` where YEAR(paydate) = '$year' and type = 'Certification'";
-				$certres = $conn->query($certax);
-				$certjan = 0; $certfeb = 0; $certmar = 0; $certapr = 0; $certmay = 0; $certjun = 0; $certjul = 0; $certaug = 0; $certsep = 0; $certoct = 0; $certnov = 0; $certdec = 0; $certtotal = 0;
-				if($certres->num_rows > 0){
-					while($row = $certres->fetch_assoc()){
-						if(date("m", strtotime($row['paydate'])) == '01'){
-							$certjan += $row['amount'];
-						}
-						elseif(date("m", strtotime($row['paydate'])) == '02'){
-							$certfeb += $row['amount'];
-						}
-						elseif(date("m", strtotime($row['paydate'])) == '03'){
-							$certmar += $row['amount'];
-						}
-						elseif(date("m", strtotime($row['paydate'])) == '04'){
-							$certapr += $row['amount'];
-						}
-						elseif(date("m", strtotime($row['paydate'])) == '05'){
-							$certmay += $row['amount'];
-						}
-						elseif(date("m", strtotime($row['paydate'])) == '06'){
-							$certjun += $row['amount'];
-						}
-						elseif(date("m", strtotime($row['paydate'])) == '07'){
-							$certjul += $row['amount'];
-						}
-						elseif(date("m", strtotime($row['paydate'])) == '08'){
-							$certaug += $row['amount'];
-						}
-						elseif(date("m", strtotime($row['paydate'])) == '09'){
-							$certsep += $row['amount'];
-						}
-						elseif(date("m", strtotime($row['paydate'])) == '10'){
-							$certoct += $row['amount'];
-						}
-						elseif(date("m", strtotime($row['paydate'])) == '11'){
-							$certnov += $row['amount'];
-						}
-						elseif(date("m", strtotime($row['paydate'])) == '12'){
-							$certdec += $row['amount'];
-						}
-					}
-					$certtotal = $certjan + $certfeb + $certmar + $certapr + $certmay + $certjun + $certjul + $certaug + $certsep + $certoct + $certnov + $certdec;
-					$jan += $certjan; $feb += $certfeb; $mar += $certmar; $apr += $certapr; $may += $certmay; $jun += $certjun;
-					$jul += $certjul; $aug += $certaug; $sep += $certsep; $oct += $certoct; $nov += $certnov; $dec += $certdec;
-				}
-			?>
-			<tr>
-				<td> Certification </td>
-				<td> <?php if($certjan > 0){ echo number_format($certjan,2); } else { echo ' - '; }?> </td>
-				<td> <?php if($certfeb > 0){ echo number_format($certfeb,2); } else { echo ' - '; }?> </td>
-				<td> <?php if($certmar > 0){ echo number_format($certmar,2); } else { echo ' - '; }?> </td>
-				<td> <?php if($certapr > 0){ echo number_format($certapr,2); } else { echo ' - '; }?> </td>
-				<td> <?php if($certmay > 0){ echo number_format($certmay,2); } else { echo ' - '; }?> </td>
-				<td> <?php if($certjun > 0){ echo number_format($certjun,2); } else { echo ' - '; }?> </td>
-				<td> <?php if($certjul > 0){ echo number_format($certjul,2); } else { echo ' - '; }?> </td>
-				<td> <?php if($certaug > 0){ echo number_format($certaug,2); } else { echo ' - '; }?> </td>
-				<td> <?php if($certsep > 0){ echo number_format($certsep,2); } else { echo ' - '; }?> </td>
-				<td> <?php if($certoct > 0){ echo number_format($certoct,2); } else { echo ' - '; }?> </td>
-				<td> <?php if($certnov > 0){ echo number_format($certnov,2); } else { echo ' - '; }?> </td>
-				<td> <?php if($certdec > 0){ echo number_format($certdec,2); } else { echo ' - '; }?> </td>
-				<td> <b><?php if($certtotal > 0){ echo number_format($certtotal,2); } else { echo ' - '; }?> </td>
+				<td colspan="14"></td>
 			</tr>
 			<tr>
 				<?php $mototal = $jan + $feb + $mar + $apr + $may + $jun + $jul + $aug + $sep + $oct + $nov + $dec; ?>
@@ -1046,7 +937,7 @@
 				<td> <b><?php if($oct > 0){ echo number_format($oct,2); } else { echo ' - '; } ?> </td>
 				<td> <b><?php if($nov > 0){ echo number_format($nov,2); } else { echo ' - '; } ?> </td>
 				<td> <b><?php if($dec > 0){ echo number_format($dec,2); } else { echo ' - '; } ?> </td>
-				<td> <b><?php if($mototal > 0){ echo number_format($mototal,2); } else { echo ' - '; } ?> </td>
+				<td style="display: none;"> <b><?php if($mototal > 0){ echo number_format($mototal,2); } else { echo ' - '; } ?> </td>
 			</tr>
 		</tbody>
 	</table>
@@ -1075,9 +966,255 @@
 		</div>
 	</div>
 </div>
+<div class = "xcont" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+<script type="text/javascript">
+	$(function () {
+    $('.xcont').highcharts({
+        chart: {
+            type: 'column'
+        },
+        title: {
+            text: 'Cash Collection Graph (Yearly Summary)'
+        },
+        subtitle: {
+            text: 'Total Collection: ₱ <?php echo number_format($mototal,2)?>'
+        },
+        xAxis: {
+            categories: [
+                <?php
+					$d = 0;
+					for($i = 1; $i <= 12; $i++){
+						echo ($year + $d)  . ',';
+						$arryear[] = ($year + $d);
+						$d += 1;
+					}
+				?>
+            ],
+            crosshair: true
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                text: '₱esos'
+            },
+            labels: {
+                formatter: function () {
+                    return Highcharts.numberFormat(this.value, 2,'.',',');
+                }
+            }
+        },
+        tooltip: {
+            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td><td style="padding:0"><b>₱ {point.y:,.2f}</b></td></tr>',
+            footerFormat: '</table>',
+            shared: true,
+            useHTML: true
+        },
+        plotOptions: {
+            column: {
+                pointPadding: 0.2,
+                borderWidth: 0
+            }
+        },
+        series: 
+        	[{
+            name: 'January',
+            data: [ <?php echo $ctjan;?>,
+            		<?php echo $ctfeb;?>,
+            		<?php echo $ctmar;?>,
+            		<?php echo $ctapr;?>,
+            		<?php echo $ctmay;?>,
+            		<?php echo $ctjun;?>,
+            		<?php echo $ctjul;?>,
+            		<?php echo $ctaug;?>,
+            		<?php echo $ctsep;?>,
+            		<?php echo $ctoct;?>,
+            		<?php echo $ctnov;?>,
+            		<?php echo $ctdec;?>
+            	  ]
+        	},{
+            name: 'February',
+            data: [ <?php echo $btjan;?>,
+            		<?php echo $btfeb;?>,
+            		<?php echo $btmar;?>,
+            		<?php echo $btapr;?>,
+            		<?php echo $btmay;?>,
+            		<?php echo $btjun;?>,
+            		<?php echo $btjul;?>,
+            		<?php echo $btaug;?>,
+            		<?php echo $btsep;?>,
+            		<?php echo $btoct;?>,
+            		<?php echo $btnov;?>,
+            		<?php echo $btdec;?>
+            	  ]
+
+        	},{
+            name: 'March',
+            data: [ <?php echo $ebjan;?>,
+            		<?php echo $ebfeb;?>,
+            		<?php echo $ebmar;?>,
+            		<?php echo $ebapr;?>,
+            		<?php echo $ebmay;?>,
+            		<?php echo $ebjun;?>,
+            		<?php echo $ebjul;?>,
+            		<?php echo $ebaug;?>,
+            		<?php echo $ebsep;?>,
+            		<?php echo $eboct;?>,
+            		<?php echo $ebnov;?>,
+            		<?php echo $ebdec;?>
+            	  ]
+
+        	},{
+            name: 'April',
+            data: [ <?php echo $rfjan;?>,
+            		<?php echo $rffeb;?>,
+            		<?php echo $rfmar;?>,
+            		<?php echo $rfapr;?>,
+            		<?php echo $rfmay;?>,
+            		<?php echo $rfjun;?>,
+            		<?php echo $rfjul;?>,
+            		<?php echo $rfaug;?>,
+            		<?php echo $rfsep;?>,
+            		<?php echo $rfoct;?>,
+            		<?php echo $rfnov;?>,
+            		<?php echo $rfdec;?>
+            	  ]
+
+        	},{
+            name: 'May',
+            data: [ <?php echo $mfjan;?>,
+            		<?php echo $mffeb;?>,
+            		<?php echo $mfmar;?>,
+            		<?php echo $mfapr;?>,
+            		<?php echo $mfmay;?>,
+            		<?php echo $mfjun;?>,
+            		<?php echo $mfjul;?>,
+            		<?php echo $mfaug;?>,
+            		<?php echo $mfsep;?>,
+            		<?php echo $mfoct;?>,
+            		<?php echo $mfnov;?>,
+            		<?php echo $mfdec;?>
+            	  ]
+
+        	},{
+            name: 'June',
+            data: [ <?php echo $mcjan;?>,
+            		<?php echo $mcfeb;?>,
+            		<?php echo $mcmar;?>,
+            		<?php echo $mcapr;?>,
+            		<?php echo $mcmay;?>,
+            		<?php echo $mcjun;?>,
+            		<?php echo $mcjul;?>,
+            		<?php echo $mcaug;?>,
+            		<?php echo $mcsep;?>,
+            		<?php echo $mcoct;?>,
+            		<?php echo $mcnov;?>,
+            		<?php echo $mcdec;?>
+            	  ]
+
+        	},{
+            name: 'July',
+            data: [ <?php echo $amjan;?>,
+            		<?php echo $amfeb;?>,
+            		<?php echo $ammar;?>,
+            		<?php echo $amapr;?>,
+            		<?php echo $ammay;?>,
+            		<?php echo $amjun;?>,
+            		<?php echo $amjul;?>,
+            		<?php echo $amaug;?>,
+            		<?php echo $amsep;?>,
+            		<?php echo $amoct;?>,
+            		<?php echo $amnov;?>,
+            		<?php echo $amdec;?>
+            	]
+
+        	},{
+            name: 'August',
+            data: [ <?php echo $pmjan;?>,
+            		<?php echo $pmfeb;?>,
+            		<?php echo $pmmar;?>,
+            		<?php echo $pmapr;?>,
+            		<?php echo $pmmay;?>,
+            		<?php echo $pmjun;?>,
+            		<?php echo $pmjul;?>,
+            		<?php echo $pmaug;?>,
+            		<?php echo $pmsep;?>,
+            		<?php echo $pmoct;?>,
+            		<?php echo $pmnov;?>,
+            		<?php echo $pmdec;?>
+            	  ]
+
+        	},{
+            name: 'September',
+            data: [ <?php echo $gwjan;?>,
+            		<?php echo $gwfeb;?>,
+            		<?php echo $gwmar;?>,
+            		<?php echo $gwapr;?>,
+            		<?php echo $gwmay;?>,
+            		<?php echo $gwjun;?>,
+            		<?php echo $gwjul;?>,
+            		<?php echo $gwaug;?>,
+            		<?php echo $gwsep;?>,
+            		<?php echo $gwoct;?>,
+            		<?php echo $gwnov;?>,
+            		<?php echo $gwdec;?>
+            	  ]
+
+        	},{
+            name: 'October',
+            data: [ <?php echo $tfjan;?>,
+            		<?php echo $tffeb;?>,
+            		<?php echo $tfmar;?>,
+            		<?php echo $tfapr;?>,
+            		<?php echo $tfmay;?>,
+            		<?php echo $tfjun;?>,
+            		<?php echo $tfjul;?>,
+            		<?php echo $tfaug;?>,
+            		<?php echo $tfsep;?>,
+            		<?php echo $tfoct;?>,
+            		<?php echo $tfnov;?>,
+            		<?php echo $tfdec;?>
+            	  ]
+
+        	},{
+            name: 'November',
+            data: [ <?php echo $srjan;?>,
+            		<?php echo $srfeb;?>,
+            		<?php echo $srmar;?>,
+            		<?php echo $srapr;?>,
+            		<?php echo $srmay;?>,
+            		<?php echo $srjun;?>,
+            		<?php echo $srjul;?>,
+            		<?php echo $sraug;?>,
+            		<?php echo $srsep;?>,
+            		<?php echo $sroct;?>,
+            		<?php echo $srnov;?>,
+            		<?php echo $srdec;?>
+            	  ]
+
+        	},{
+            name: 'December',
+            data: [ <?php echo $tctjan;?>,
+            		<?php echo $tctfeb;?>,
+            		<?php echo $tctmar;?>,
+            		<?php echo $tctapr;?>,
+            		<?php echo $tctmay;?>,
+            		<?php echo $tctjun;?>,
+            		<?php echo $tctjul;?>,
+            		<?php echo $tctaug;?>,
+            		<?php echo $tctsep;?>,
+            		<?php echo $tctoct;?>,
+            		<?php echo $tctnov;?>,
+            		<?php echo $tctdec;?>
+            	  ]
+
+        	},]
+    });
+});
+</script>
 <?php
 	if(isset($_GET['year'])){ $search = '&year=' . $_GET['year']; }else{ $search = ""; }
 	if(isset($_GET['print'])){
-		echo '<script type = "text/javascript">	window.print();window.location.href = "?module=report'.$search.'";</script>';
+		echo '<script type = "text/javascript">	window.print(); setTimeout(function() { window.location.href = "?module=repsum'.$search.'" }, 100);;</script>';
 	}
 ?>

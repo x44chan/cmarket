@@ -15,7 +15,6 @@ $(document).ready( function () {
 });
 
 $(window).load(function(){
-  $(".highcharts-button").hide();
   $(".highcharts-contextmenu").hide();
 });
 

@@ -43,9 +43,10 @@
             		<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="icon-folder"></span> Reports <b class="caret"></b></a>
             		<ul class="dropdown-menu" role="menu">
                 		<li><a role = "button" href = "?module=report"><span class="icon-file-text"></span> Cash Collection Report </a></li>
+                        <li><a role = "button" href = "?module=graph"><span class="icon-stats-bars"></span> Cash Collection Graph </a></li> 
                 		<li><a role = "button" href = "?module=reppaymentmo"><span class="icon-file-text"></span> Client Payment Report </a></li>
-                		<li><a role = "button" href = "?module=reppayment"><span class="icon-file-text"></span> Client Payment Detailed Report </a></li>
-                		<li><a role = "button" href = "?module=graph"><span class="icon-stats-bars"></span> Cash Collection Graph </a></li>
+                		<li><a role = "button" href = "?module=reppayment"><span class="icon-file-text"></span> Client Payment Detailed Report </a></li>                       
+                        <li><a role = "button" href = "?module=repsum"><span class="icon-file-text"></span> Cash Collection Report & <span class="icon-stats-bars"></span> Graph (Yearly Summary) </a></li>
                 	</ul>
             	</li>
             	<?php if($_SESSION['level']=="Administrator"){ ?>
@@ -60,8 +61,7 @@
         	<ul class="nav navbar-nav navbar-right">
         		<li class="dropdown">
             		<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="icon-user"></span> <?php echo $_SESSION['name']; ?> <b class="caret"></b></a>
-            		<ul class="dropdown-menu" role="menu">
-            			
+            		<ul class="dropdown-menu" role="menu">            			
 						<li><a role = "button" href = "?module=changepass"><span class="icon-eye"></span> Change Password </a></li>
                 		<li><a style = "color: red;" role = "button" href = "?module=logout"><span class="icon-switch"></span> Log Out </a></li>
 						<!--<li><a role = "button" href = "?module=newowner"> Add New Owner </a></li>-->					
