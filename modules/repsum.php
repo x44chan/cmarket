@@ -8,8 +8,13 @@
 	th{
 		text-align: center;
 	}
+	.highcharts-button{
+ 		visibility: hidden;
+ 	}
 	@media print {
-		
+		#xxxs, #tohide, .footer{
+			visibility: hidden;
+		}
 	  	@page{ size: A4 landscape;}
 	  	#reportg #red {
 	  		color: red !important;
@@ -38,9 +43,6 @@
 	 	<?php } ?>
 	 	.xcont{
 	 		visibility: visible;
-	 	}
-	 	.highcharts-button{
-	 		visibility: hidden;
 	 	}
 		#reportg th{
 	  		font-size: 12px;
@@ -82,7 +84,7 @@
 	 	border-bottom: 1px solid !important;
 	 }
 </style>
-<div class="container-fluid">
+<div class="container-fluid" id = "xxxs">
 	<div class="col-xs-12 form-inline" align="right">
 		<form action = "" method="get">
 			<input type = 'hidden' name = "module" value = "repsum">
@@ -108,6 +110,7 @@
 			<button class="btn btn-primary btn-sm"><span class = "icon-search"></span> Search </button>
 			<a href="?module=repsum" class="btn btn-danger btn-sm"><span class = "icon-spinner11"></span> Clear </a>
 			<a href = "?module=repsum<?php if(isset($_GET['year'])){ echo '&year=' . $_GET['year'];}?>&print"class="btn btn-success btn-sm"><span class = "icon-printer"></span> Print Report</a>
+			<button class="btn btn-success btn-sm" onclick="window.print()"><span class = "icon-printer"></span> Print Graph</button>	
 		</form>			
 	</div>
 </div>
@@ -967,6 +970,31 @@
 	</div>
 </div>
 <div class = "xcont" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+<div class="row" style="margin-top: 25px;">
+		<div class="col-xs-4 col-xs-offset-1">
+			<br><p>Prepared by:</p>
+		</div>
+	</div>
+	<?php
+		$stmt = "SELECT * FROM `references`";
+		$data = $conn->query($stmt)->fetch_assoc();
+	?>
+	<div class="row">
+		<div class="col-xs-4 col-xs-offset-1" style="text-align: center;">
+			<p><b><?php echo strtoupper($data['aaide']);?></b></p>
+			<p><?php echo strtoupper($data['post2']);?></p>
+		</div>
+		<div class="col-xs-4 col-xs-offset-3">
+			<p>Noted by:</p>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-4 col-xs-offset-8" style="text-align: center;">
+			<p><b><?php echo strtoupper($data['mvisor']);?></b></p>
+			<p><?php echo strtoupper($data['post1']);?></p>
+		</div>
+	</div>
+</div>
 <script type="text/javascript">
 	$(function () {
     $('.xcont').highcharts({
