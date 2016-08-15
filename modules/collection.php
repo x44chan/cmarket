@@ -4,7 +4,7 @@
 		$or = "SELECT * FROM collection,store where store.store_id = collection.store_id and ornum = '$ornum'";
 		$resor = $conn->query($or);
 		if($resor->num_rows > 0){
-			$edmfee = 0; $edbill = 0; $edwbill = 0; $edmclear = 0; $edbtax = 0; $edsrental = 0; $edamortem = 0; $edpmortem = 0; $edtfee = 0; $edrfee = 0; $edgwill = 0; $edtct = 0;
+			$edmfee = 0; $edbill = 0; $edwbill = 0; $edmclear = 0; $edbtax = 0; $edsrental = 0; $edamortem = 0; $edpmortem = 0; $edtfee = 0; $edrfee = 0; $edgwill = 0; $edtct = 0; $edpfee = 0;
 			$dataor = $conn->query($or)->fetch_assoc();
 			while ($or = $resor->fetch_assoc()) {
 				if($or['type'] == 'Market Fee'){
@@ -63,6 +63,9 @@
 				}elseif($or['type'] == "TCT"){
 					$edtct += $or['amount'];
 					$typtct = 1;
+				}elseif($or['type'] == "Permit Fee"){
+					$edpfee += $or['amount'];
+					$typpfee = 1;
 				}
 			}
 		}else{
@@ -73,7 +76,7 @@
 <script type="text/javascript">
 	$(document).ready( function () {
 		$("button[ name = 'collsub']").on("click", function(){
-			if($('#trmfee').is(":checked") || $('#trebill').is(":checked") || $('#trwbill').is(":checked") || $('#trmc').is(":checked") || $('#trbt').is(":checked") || $('#trsrent').is(":checked") || $('#tramortem').is(":checked")  || $('#trpmortem').is(":checked") || $('#trtfee').is(":checked") || $('#trrfee').is(":checked") || $('#trgwill').is(":checked") || $('#trct').is(":checked") ){
+			if($('#trmfee').is(":checked") || $('#trebill').is(":checked") || $('#trwbill').is(":checked") || $('#trmc').is(":checked") || $('#trbt').is(":checked") || $('#trsrent').is(":checked") || $('#tramortem').is(":checked")  || $('#trpmortem').is(":checked") || $('#trtfee').is(":checked") || $('#trrfee').is(":checked") || $('#trgwill').is(":checked") || $('#trct').is(":checked") ||  $('#trpfee').is(":checked") ){
 			}else{
 				$("#err").show();
 				return false;
@@ -173,6 +176,13 @@
 		    }else{
 		    	$("input[name = 'tctamount']").attr('required',false);
 		    	$("#tct").hide();
+		    }
+		    if($('#trpfee').is(":checked")){ 	        
+		    	$("#pfee").show();
+		    	$("input[name = 'pfeeamount']").attr('required',true);
+		    }else{
+		    	$("input[name = 'pfeeamount']").attr('required',false);
+		    	$("#pfee").hide();
 		    }
 		});
 		var date = "<?php echo date('Y-m-d');?>";
@@ -408,6 +418,9 @@
 
 				<td>
 					<label><input <?php if(isset($typtct)){ echo ' checked '; }elseif(isset($_GET['or']) && !isset($typtct)){ echo ' disabled ';} ?> type = "checkbox" id = "trct"> TCT</label>
+				</td>
+				<td>
+					<label><input <?php if(isset($typpfee)){ echo ' checked '; }elseif(isset($_GET['or']) && !isset($typpfee)){ echo ' disabled ';} ?> type = "checkbox" id = "trpfee"> P. Fee </label>
 				</td>
 			</tr>
 			<tr style="color: red; display: none;" id = "err">
@@ -699,6 +712,20 @@
 				</div>
 			</div>
 		</div>
+		<div id = "pfee" <?php if(isset($typpfee)){ echo ' checked '; }else{  ?> style="display: none;" <?php } ?>>
+			<div class="row" style="margin-left: -40px;">
+				<div class="col-xs-12" > 
+					<i><u><h4 style="font-size: 15.5px;">Permit Fee</h4></u></i>
+					<hr>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-5">
+					<label>Amount: <font color="red">*</font></label>
+					<input <?php if(isset($typpfee) && $edpfee > 0){ echo ' value = "'.$edpfee.'" '; }?> autocomplete = "off" name="pfeeamount" type="text" class="form-control input-sm" placeholder = "Enter Amount"/>
+				</div>
+			</div>
+		</div>
 	<?php if(!isset($_GET['or'])) { ?>
 		<div class="row">
 			<div class="col-xs-12" align="center">
@@ -855,6 +882,14 @@
 				$count += 1;
 			}
 		}
+		if(isset($_POST['pfeeamount']) && !empty($_POST['pfeeamount'])){
+			$type = "Permit Fee";
+			$stmt = $conn->prepare("INSERT INTO collection (paydate, invoice, store_id, owner_id, ornum, amount, type) VALUES (?, ?, ?, ?, ?, ?, ?)");
+			$stmt->bind_param("ssiiids", $_POST['datecollect'], $_POST['invoicenum'], $_POST['strename'], $_POST['streown'], $_POST['ornum'], $_POST['pfeeamount'], $type);	
+			if($stmt->execute()){
+				$count += 1;
+			}
+		}
 
 		if($count > 0){
 			echo '<script type = "text/javascript">alert("Adding Record Successful");window.location.replace("/cmarket/?module=collection");</script>';
@@ -963,6 +998,15 @@
 			$type = "TCT";
 			$stmt = $conn->prepare("UPDATE collection set paydate = ?, invoice = ?, store_id = ?, owner_id = ?, ornum = ?, amount = ?, type = ?, editreason = ?, editdate = ? where type = ? and ornum = ?");
 			$stmt->bind_param("ssiiidssssi", $_POST['datecollect'], $_POST['invoicenum'], $_POST['strename'], $_POST['streown'], $_POST['ornum'], $_POST['tctamount'], $type,$_POST['edreason'], date("Y-m-d h:i A"), $type, $_GET['or']);	
+			if($stmt->execute()){
+				$count += 1;
+			}
+		}
+
+		if(isset($_POST['pfeeamount']) && !empty($_POST['pfeeamount'])){
+			$type = "Permit Fee";
+			$stmt = $conn->prepare("UPDATE collection set paydate = ?, invoice = ?, store_id = ?, owner_id = ?, ornum = ?, amount = ?, type = ?, editreason = ?, editdate = ? where type = ? and ornum = ?");
+			$stmt->bind_param("ssiiidssssi", $_POST['datecollect'], $_POST['invoicenum'], $_POST['strename'], $_POST['streown'], $_POST['ornum'], $_POST['pfeeamount'], $type,$_POST['edreason'], date("Y-m-d h:i A"), $type, $_GET['or']);	
 			if($stmt->execute()){
 				$count += 1;
 			}
@@ -1080,10 +1124,11 @@
 				<th>RF</th>
 				<th>G</th>
 				<th>TCT</th>
+				<th>P.FEE</th>
 			</tr>
 		</thead>
 		<tbody>
-			<tr><td colspan = "16"><hr></td></tr>
+			<tr><td colspan = "17"><hr></td></tr>
 <?php 
 	
 	$mfeetotal = 0;
@@ -1098,6 +1143,7 @@
 	$rftotal = 0;
 	$gtotal = 0;
 	$tctotal = 0;
+	$pfeetotal = 0;
 	if($result->num_rows > 0){
 		while ($row = $result->fetch_assoc()) {
 			$ebill = " - ";
@@ -1113,7 +1159,8 @@
 			$tf = " - ";
 			$rf = " - ";
 			$g = " - ";
-			$tct = " - ";	
+			$tct = " - ";
+			$pfee = " - ";	
 			$btsr2 = 0;	
 			echo '<tr>';
 			echo '<td>' . $row['ornum'] . '</td>';
@@ -1187,6 +1234,10 @@
 						$tct = '₱ ' . number_format($row2['amount']);
 						$tctotal += $row2['amount'];
 					}
+					if($row2['type'] == "Permit Fee"){
+						$pfee = '₱ ' . number_format($row2['amount']);
+						$pfeetotal += $row2['amount'];
+					}
 
 				}
 				echo '<td>' . $mfeeamount . '</td>';
@@ -1203,13 +1254,14 @@
 				echo '<td>'.$rf.'</td>';
 				echo '<td>'.$g.'</td>';
 				echo '<td>'.$tct.'</td>';
+				echo '<td>'.$pfee.'</td>';
 				echo '</tr>';
 			}
 		}
 	}else{
-		echo '<tr><td colspan = 16><h4><i>No Record Found</i></h4></td></tr>';
+		echo '<tr><td colspan = 17><h4><i>No Record Found</i></h4></td></tr>';
 	}
-	echo '<tr><td colspan = 16><hr></td><tr>';
+	echo '<tr><td colspan = 17><hr></td><tr>';
 	echo '<tr>
 			<td><b>Total: </b></td>
 			<td colspan = 2 style = "text-align: right !important;">₱' . number_format($mfeetotal,2) . '</td>
@@ -1223,26 +1275,27 @@
 			<td>₱'.number_format($rftotal,2).'</td>
 			<td>₱'.number_format($gtotal,2).'</td>
 			<td>₱'.number_format($tctotal,2).'</td>
+			<td>₱'.number_format($pfeetotal,2).'</td>
 		</tr>';
-		$total = $mfeetotal + $ebilltotal + $wbilltotal + $mctotal + $btsrtotal + $amtotal + $pmtotal + $tftotal + $rftotal + $gtotal + $tctotal;
+		$total = $mfeetotal + $ebilltotal + $wbilltotal + $mctotal + $btsrtotal + $amtotal + $pmtotal + $tftotal + $rftotal + $gtotal + $tctotal + $pfeetotal;
 	$cashticket = "SELECT * FROM collection,user where user.account_id = collection.collector_id and type = 'Cash Ticket' $xquery ORDER BY lname";
 	$restct = $conn->query($cashticket);
 	$cttotal = 0;
 	if($restct->num_rows > 0){
-		echo '<tr><td colspan = 16><hr><h4><i>Cash Ticket Collection</i></h4></td></tr>';
-		echo '<tr><td colspan = 7><b>Collector</td><td colspan = 8 style = "text-align: center;"><b>Amount</td><td></td></tr>';
+		echo '<tr><td colspan = 17><hr><h4><i>Cash Ticket Collection</i></h4></td></tr>';
+		echo '<tr><td colspan = 7><b>Collector</td><td colspan = 6 style = "text-align: center;"><b>Amount</td><td colspan = 4></td></tr>';
 		while ($ct = $restct->fetch_assoc()) {
 			echo '<tr>';
 				echo '<td colspan = 7>' . $ct['lname'] . ', ' . $ct['fname'] . '</td>';
 				echo '<td></td>';
-				echo '<td colspan = 4>₱ ' . number_format($ct['amount'],2) . '</td><td colspan = 4></td>';
+				echo '<td colspan = 4>₱ ' . number_format($ct['amount'],2) . '</td><td colspan = 5></td>';
 			echo '</tr>';
 			$cttotal += $ct['amount'];
 		}
-		echo '<tr><td colspan = 7></td><td><br><b>Total:</td><td colspan = 4><hr>₱ '.number_format($cttotal,2).'</td><td colspan = 4></td></tr>';
+		echo '<tr><td colspan = 7></td><td><br><b>Total:</td><td colspan = 4><hr>₱ '.number_format($cttotal,2).'</td><td colspan = 5></td></tr>';
 	}
-	echo '<tr><td colspan = 16><hr></td><tr>';
-	echo '<tr><td colspan = "8"><b>Total Collection: </b></td><td colspan = 4>₱ ' . number_format($total+$cttotal,2) . '</td><td colspan = 4></td></tr>';
+	echo '<tr><td colspan = 17><hr></td><tr>';
+	echo '<tr><td colspan = "8"><b>Total Collection: </b></td><td colspan = 4>₱ ' . number_format($total+$cttotal,2) . '</td><td colspan = 5></td></tr>';
 ?>	
 </div>
 

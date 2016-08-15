@@ -1074,6 +1074,70 @@
 				<td> <?php if($certdec > 0){ echo number_format($certdec,2); } else { echo ' - '; }?> </td>
 				<td> <b><?php if($certtotal > 0){ echo number_format($certtotal,2); } else { echo ' - '; }?> </td>
 			</tr>
+			<?php
+				$pfee = "SELECT * FROM `collection` where  owner_id = '$streown' and YEAR(paydate) = '$year' and type = 'Permit Fee'";
+				$pfeeres = $conn->query($pfee);
+				$pfeejan = 0; $pfeefeb = 0; $pfeemar = 0; $pfeeapr = 0; $pfeemay = 0; $pfeejun = 0; $pfeejul = 0; $pfeeaug = 0; $pfeesep = 0; $pfeeoct = 0; $pfeenov = 0; $pfeedec = 0; $pfeetotal = 0;
+				if($pfeeres->num_rows > 0){
+					while($row = $pfeeres->fetch_assoc()){
+						if(date("m", strtotime($row['paydate'])) == '01'){
+							$pfeejan += $row['amount'];
+						}
+						elseif(date("m", strtotime($row['paydate'])) == '02'){
+							$pfeefeb += $row['amount'];
+						}
+						elseif(date("m", strtotime($row['paydate'])) == '03'){
+							$pfeemar += $row['amount'];
+						}
+						elseif(date("m", strtotime($row['paydate'])) == '04'){
+							$pfeeapr += $row['amount'];
+						}
+						elseif(date("m", strtotime($row['paydate'])) == '05'){
+							$pfeemay += $row['amount'];
+						}
+						elseif(date("m", strtotime($row['paydate'])) == '06'){
+							$pfeejun += $row['amount'];
+						}
+						elseif(date("m", strtotime($row['paydate'])) == '07'){
+							$pfeejul += $row['amount'];
+						}
+						elseif(date("m", strtotime($row['paydate'])) == '08'){
+							$pfeeaug += $row['amount'];
+						}
+						elseif(date("m", strtotime($row['paydate'])) == '09'){
+							$pfeesep += $row['amount'];
+						}
+						elseif(date("m", strtotime($row['paydate'])) == '10'){
+							$pfeeoct += $row['amount'];
+						}
+						elseif(date("m", strtotime($row['paydate'])) == '11'){
+							$pfeenov += $row['amount'];
+						}
+						elseif(date("m", strtotime($row['paydate'])) == '12'){
+							$pfeedec += $row['amount'];
+						}
+					}
+					$pfeetotal = $pfeejan + $pfeefeb + $pfeemar + $pfeeapr + $pfeemay + $pfeejun + $pfeejul + $pfeeaug + $pfeesep + $pfeeoct + $pfeenov + $pfeedec;
+					$jan += $pfeejan; $feb += $pfeefeb; $mar += $pfeemar; $apr += $pfeeapr; $may += $pfeemay; $jun += $pfeejun;
+					$jul += $pfeejul; $aug += $pfeeaug; $sep += $pfeesep; $oct += $pfeeoct; $nov += $pfeenov; $dec += $pfeedec;
+				}
+			?>
+			<tr>
+				<td> Permit Fee </td>
+				<td> <?php if($pfeejan > 0){ echo number_format($pfeejan,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($pfeefeb > 0){ echo number_format($pfeefeb,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($pfeemar > 0){ echo number_format($pfeemar,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($pfeeapr > 0){ echo number_format($pfeeapr,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($pfeemay > 0){ echo number_format($pfeemay,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($pfeejun > 0){ echo number_format($pfeejun,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($pfeejul > 0){ echo number_format($pfeejul,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($pfeeaug > 0){ echo number_format($pfeeaug,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($pfeesep > 0){ echo number_format($pfeesep,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($pfeeoct > 0){ echo number_format($pfeeoct,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($pfeenov > 0){ echo number_format($pfeenov,2); } else { echo ' - '; }?> </td>
+				<td> <?php if($pfeedec > 0){ echo number_format($pfeedec,2); } else { echo ' - '; }?> </td>
+				<td> <b><?php if($pfeetotal > 0){ echo number_format($pfeetotal,2); } else { echo ' - '; }?> </td>
+			</tr>
 			<tr>
 				<?php $mototal = $jan + $feb + $mar + $apr + $may + $jun + $jul + $aug + $sep + $oct + $nov + $dec; ?>
 				<td> <b>Total </td>
