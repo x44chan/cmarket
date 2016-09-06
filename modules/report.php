@@ -13,7 +13,7 @@
 	    	visibility: hidden;
 	    
 	  	}
-	  	@page{ size: A4 landscape;}
+	  	@page{ size: landscape;}
 	  	#reportg #red {
 	  		color: red !important;
 	  	}
